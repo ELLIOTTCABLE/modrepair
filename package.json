@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@types/wicg-file-system-access": "^2020.9.5"
+  }
+}
