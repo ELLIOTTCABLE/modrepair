@@ -2,3 +2,6 @@ npm-debug.log*
 
 node_modules
 dist
+
+// Because I'm trying out Dracula UI, which has to be obtained from GitHub Packages
+.npmrc
