@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react"
+import "./App.css"
 
-import Editor from './Editor'
+import Editor from "./Editor"
 
 function SelectFileButton() {
    return <button>Select ModsConfig</button>
