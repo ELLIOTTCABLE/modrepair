@@ -1,26 +1,29 @@
 import { useState } from "react"
 import "./App.css"
 
+import "@dracula/dracula-ui/styles/dracula-ui.css"
+import { Box, Button } from "@dracula/dracula-ui"
+
 import Editor from "./Editor"
 
 function SelectFileButton() {
-   return <button>Select ModsConfig</button>
+   return <Button color="cyan">Select ModsConfig.xml</Button>
 }
 
 function Header() {
    return (
-      <>
+      <Box m="sm">
          <SelectFileButton />
-      </>
+      </Box>
    )
 }
 
 function App() {
    return (
-      <>
+      <Box px="md" id="flex-wrapper">
          <Header />
          <Editor />
-      </>
+      </Box>
    )
 }
 

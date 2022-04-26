@@ -15,7 +15,7 @@ export default function Editor() {
    return (
       <MonacoEditor
          className="editor"
-         height="90vh"
+         height="100%"
          theme="dracula"
          defaultLanguage="xml"
          defaultValue={exampleModsConfig}

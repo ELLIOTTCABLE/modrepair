@@ -1,9 +1,25 @@
-body {
+:root {
+   --rounded-lg: 0;
+}
+
+body,
+html {
    margin: 0;
+   height: 100%;
+   background-color: var(--black);
+}
+
+body {
    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
       "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
+}
+
+#flex-wrapper {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
 }
 
 code {
