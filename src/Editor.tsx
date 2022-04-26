@@ -3,11 +3,13 @@ import ReactDOM from "react-dom"
 
 import MonacoEditor from "@monaco-editor/react"
 import draculaTheme from "./Dracula.monacotheme.json"
-import type { Monaco } from "monaco-editor"
+import type * as monaco from "monaco-editor"
+
+import { plainText as exampleModsConfig } from "@virtual:plain-text/exampleModsConfig.xml"
 
 export default function Editor() {
-   function handleEditorWillMount(monaco: Monaco) {
-      monaco.editor.defineTheme("dracula", draculaTheme)
+   function handleEditorWillMount(m: typeof monaco) {
+      m.editor.defineTheme("dracula", draculaTheme as monaco.editor.IStandaloneThemeData)
    }
 
    return (
@@ -16,7 +18,7 @@ export default function Editor() {
          height="90vh"
          theme="dracula"
          defaultLanguage="xml"
-         defaultValue="<!-- Click above to begin -->"
+         defaultValue={exampleModsConfig}
          beforeMount={handleEditorWillMount}
       />
    )
