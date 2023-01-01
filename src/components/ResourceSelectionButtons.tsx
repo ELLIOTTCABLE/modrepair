@@ -1,49 +1,50 @@
 import { useCallback } from "react"
-import type { Dispatch, SetStateAction, MouseEventHandler } from "react"
+import type { Dispatch, SetStateAction, DragEventHandler, MouseEventHandler } from "react"
 
 import { Button } from "dracula-ui"
 
-import { fileOpen, directoryOpen } from "browser-fs-access"
-import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-access"
+import { fileOpen } from "browser-fs-access"
+import type { FileWithHandle } from "browser-fs-access"
 
 export interface Props {
    fileIsSelected: boolean
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
    modsConfigFile: FileWithHandle
    setModsConfigFile: Dispatch<SetStateAction<FileWithHandle>>
-   workshopDirectory: FileWithDirectoryAndFileHandle | undefined
-   setWorkshopDirectory: Dispatch<
-      SetStateAction<FileWithDirectoryAndFileHandle | undefined>
-   >
+   workshopDirectory: FileSystemEntry | undefined
+   setWorkshopDirectory: Dispatch<SetStateAction<FileSystemEntry | undefined>>
 }
 
 const ResourceSelectionButtons = (props: Props) => {
    return (
       <>
          <SelectFileButton {...props} />
-         <SelectWorkshopDirectoryButton {...props} />
+         <WorkshopDirectoryDropZone {...props} />
       </>
    )
 }
 
-const SelectWorkshopDirectoryButton = (props: Props) => {
-   const handleWorkshopDirectorySelect: MouseEventHandler = useCallback(
+const WorkshopDirectoryDropZone = (props: Props) => {
+   const handleMisClick: MouseEventHandler = useCallback((e) => {
+      e.preventDefault()
+      console.log("handleClick:", e)
+      throw new Error("you can't click here")
+   }, [])
+
+   const handleWorkshopDirectoryDrop: DragEventHandler = useCallback(
       async (e) => {
          e.preventDefault()
          console.log("handleWorkshopDirectorySelect:", e)
 
-         const workshopDirectories = await directoryOpen({
-            recursive: true,
-            startIn: "documents",
-            id: "rimworld-workshop-mods-directory",
-         })
+         const droppedItems = e.dataTransfer.items
+         if (droppedItems.length !== 1) throw new Error("too many directories selected")
 
-         console.log("workshopDirectories:", workshopDirectories)
+         const workshopDirectory = droppedItems[0].webkitGetAsEntry()
+         console.log("workshopDirectory:", workshopDirectory)
 
-         if (workshopDirectories.length !== 1)
-            throw new Error("too many directories selected")
+         if (!workshopDirectory) throw new Error("no directory selected")
 
-         props.setWorkshopDirectory(workshopDirectories[0])
+         props.setWorkshopDirectory(workshopDirectory)
       },
       [props.setWorkshopDirectory],
    )
@@ -54,8 +55,12 @@ const SelectWorkshopDirectoryButton = (props: Props) => {
       <Button
          variant={props.workshopDirectory ? "outline" : undefined}
          color={isNextStep ? "animated" : "cyan"}
-         onClick={handleWorkshopDirectorySelect}>
-         Select Workshop Directory
+         onClick={handleMisClick}
+         onDragOver={(e) => {
+            e.preventDefault()
+         }}
+         onDrop={handleWorkshopDirectoryDrop}>
+         Drag & drop Workshop "294100" directory here
       </Button>
    )
 }
