@@ -5,17 +5,17 @@ import "./App.css"
 import "dracula-ui/styles/dracula-ui.css"
 import { Box } from "dracula-ui"
 
-import SelectFileButton, {
-   type Props as SelectFileButtonProps,
-} from "./components/SelectFileButton"
+import ResourceSelectionButtons, {
+   type Props as ResourceSelectionButtonsProps,
+} from "./components/ResourceSelectionButtons"
 import Editor from "./components/Editor"
 
 import { plainText as exampleModsConfigContent } from "@virtual:plain-text/exampleModsConfig.xml"
 
-const Header = (props: SelectFileButtonProps) => {
+const Header = (props: ResourceSelectionButtonsProps) => {
    return (
       <Box m="sm">
-         <SelectFileButton {...props} />
+         <ResourceSelectionButtons {...props} />
       </Box>
    )
 }

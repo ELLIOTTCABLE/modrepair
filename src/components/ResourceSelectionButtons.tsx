@@ -3,14 +3,22 @@ import type { Dispatch, SetStateAction, MouseEventHandler } from "react"
 
 import { Button } from "dracula-ui"
 
-import { fileOpen, directoryOpen } from "browser-fs-access"
-import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-access"
+import { fileOpen } from "browser-fs-access"
+import type { FileWithHandle } from "browser-fs-access"
 
 export interface Props {
    fileIsSelected: boolean
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
    modsConfigFile: FileWithHandle
    setModsConfigFile: Dispatch<SetStateAction<FileWithHandle>>
+}
+
+const ResourceSelectionButtons = (props: Props) => {
+   return (
+      <>
+         <SelectFileButton {...props} />
+      </>
+   )
 }
 
 const SelectFileButton = (props: Props) => {
