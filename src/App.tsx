@@ -1,28 +1,42 @@
 import { useState } from "react"
+import type { FileWithHandle } from "browser-fs-access"
+
 import "./App.css"
-
 import "dracula-ui/styles/dracula-ui.css"
-import { Box, Button } from "dracula-ui"
+import { Box } from "dracula-ui"
 
+import SelectFileButton, {
+   type Props as SelectFileButtonProps,
+} from "./components/SelectFileButton"
 import Editor from "./components/Editor"
 
-function SelectFileButton() {
-   return <Button color="cyan">Select ModsConfig.xml</Button>
-}
+import { plainText as exampleModsConfigContent } from "@virtual:plain-text/exampleModsConfig.xml"
 
-function Header() {
+const Header = (props: SelectFileButtonProps) => {
    return (
       <Box m="sm">
-         <SelectFileButton />
+         <SelectFileButton {...props} />
       </Box>
    )
 }
 
 function App() {
+   const exampleModsConfig = new File([exampleModsConfigContent], "ModsConfig.xml", {
+      type: "text/plain",
+   })
+
+   const [modsConfigFile, setModsConfigFile] = useState<FileWithHandle>(exampleModsConfig)
+   const [fileIsSelected, setFileIsSelected] = useState(false)
+
    return (
       <Box px="md" id="flex-wrapper">
-         <Header />
-         <Editor />
+         <Header
+            fileIsSelected={fileIsSelected}
+            setFileIsSelected={setFileIsSelected}
+            modsConfigFile={modsConfigFile}
+            setModsConfigFile={setModsConfigFile}
+         />
+         <Editor modsConfigFile={modsConfigFile} />
       </Box>
    )
 }

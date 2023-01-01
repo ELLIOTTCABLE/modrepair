@@ -8,13 +8,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "dracula-ui": "^1.0.0",
     "@monaco-editor/react": "^4.4.4",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "browser-fs-access": "^0.31.1",
+    "dracula-ui": "^1.0.0",
     "monaco-editor": "^0.33.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "use-async-effect": "^2.2.7",
     "vite-plugin-virtual-plain-text": "^1.2.2"
   },
   "devDependencies": {
