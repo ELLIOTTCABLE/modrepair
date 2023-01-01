@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { FileWithHandle } from "browser-fs-access"
+import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-access"
 
 import "./App.css"
 import "dracula-ui/styles/dracula-ui.css"
@@ -27,6 +27,9 @@ function App() {
 
    const [modsConfigFile, setModsConfigFile] = useState<FileWithHandle>(exampleModsConfig)
    const [fileIsSelected, setFileIsSelected] = useState(false)
+   const [workshopDirectory, setWorkshopDirectory] = useState<
+      FileWithDirectoryAndFileHandle | undefined
+   >()
 
    return (
       <Box px="md" id="flex-wrapper">
@@ -35,6 +38,8 @@ function App() {
             setFileIsSelected={setFileIsSelected}
             modsConfigFile={modsConfigFile}
             setModsConfigFile={setModsConfigFile}
+            workshopDirectory={workshopDirectory}
+            setWorkshopDirectory={setWorkshopDirectory}
          />
          <Editor modsConfigFile={modsConfigFile} />
       </Box>
