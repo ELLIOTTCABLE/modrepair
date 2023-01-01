@@ -1,8 +1,8 @@
 import { useState } from "react"
 import "./App.css"
 
-import "@dracula/dracula-ui/styles/dracula-ui.css"
-import { Box, Button } from "@dracula/dracula-ui"
+import "dracula-ui/styles/dracula-ui.css"
+import { Box, Button } from "dracula-ui"
 
 import Editor from "./Editor"
 
