@@ -2,10 +2,10 @@ import React from "react"
 import ReactDOM from "react-dom"
 
 import MonacoEditor from "@monaco-editor/react"
-import draculaTheme from "./Dracula.monacotheme.json"
+import draculaTheme from "../Dracula.monacotheme.json"
 import type * as monaco from "monaco-editor"
 
-import { plainText as exampleModsConfig } from "@virtual:plain-text/exampleModsConfig.xml"
+import { plainText as exampleModsConfig } from "@virtual:plain-text/../exampleModsConfig.xml"
 
 export default function Editor() {
    function handleEditorWillMount(m: typeof monaco) {

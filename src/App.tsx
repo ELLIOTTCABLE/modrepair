@@ -4,7 +4,7 @@ import "./App.css"
 import "dracula-ui/styles/dracula-ui.css"
 import { Box, Button } from "dracula-ui"
 
-import Editor from "./Editor"
+import Editor from "./components/Editor"
 
 function SelectFileButton() {
    return <Button color="cyan">Select ModsConfig.xml</Button>
