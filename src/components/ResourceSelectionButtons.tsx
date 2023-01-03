@@ -6,6 +6,16 @@ import { Button } from "dracula-ui"
 import { fileOpen } from "browser-fs-access"
 import type { FileWithHandle } from "browser-fs-access"
 
+import {
+   filePromise,
+   entriesOfDroppedItems,
+   entriesOfDirectories,
+} from "../utils/directoryReader"
+
+export type ModInfo = {
+   id: string
+}
+
 export interface Props {
    fileIsSelected: boolean
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
@@ -24,27 +34,93 @@ const ResourceSelectionButtons = (props: Props) => {
    )
 }
 
+const entryIsDirectory = (entry: FileSystemEntry): entry is FileSystemDirectoryEntry => {
+   return entry.isDirectory
+}
+
+const entryIsFile = (entry: FileSystemEntry): entry is FileSystemFileEntry => {
+   return entry.isFile
+}
+
+const parseModAboutXml = async (
+   alternativeId: string,
+   modAboutXml: FileSystemFileEntry,
+) => {
+   const modAboutXmlContent = await filePromise(modAboutXml)
+   const modAboutXmlContentText = await modAboutXmlContent.text()
+
+   const parser = new DOMParser()
+   const modAboutXmlDocument = parser.parseFromString(modAboutXmlContentText, "text/xml")
+   const root = modAboutXmlDocument.documentElement
+
+   if (root?.tagName !== "ModMetaData") {
+      console.error(`mod ${alternativeId}: no <ModMetaData/> found`, root)
+   }
+
+   const packageId = root.getElementsByTagName("packageId")[0]?.textContent
+   const name = root.getElementsByTagName("name")[0]?.textContent
+   const errorId = `${alternativeId}, ${packageId || name}`
+   if (!packageId) console.error(`mod ${errorId}: no <packageId/> found`, root)
+   if (!name) console.error(`mod ${errorId}: no <name/> found`, root)
+
+   return {
+      id: packageId,
+      name,
+   }
+}
+
+const parseMod = async (modFileSystemEntry: FileSystemDirectoryEntry) => {
+   const alternativeId = modFileSystemEntry.name
+   const modEntries = await entriesOfDirectories([modFileSystemEntry])
+
+   const modAboutFolder = modEntries.find((entry) => entry.name === "About")
+   if (!modAboutFolder)
+      return console.error(`workshop item ${alternativeId}: no About folder found`)
+
+   if (!entryIsDirectory(modAboutFolder))
+      return console.error(`workshop item ${alternativeId}: About/ is not a directory`)
+
+   const modAboutEntries = await entriesOfDirectories([modAboutFolder])
+   const modAboutXml = modAboutEntries.find((entry) => entry.name === "About.xml")
+   if (!modAboutXml)
+      return console.error(`workshop item ${alternativeId}: no About/About.xml found`)
+
+   if (!entryIsFile(modAboutXml))
+      return console.error(
+         `workshop item ${alternativeId}: About/About.xml is not a file`,
+      )
+   return parseModAboutXml(alternativeId, modAboutXml)
+}
+
+const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
+   const modMap = new Map<string, FileSystemEntry>()
+   for (const entry of entries) {
+      if (!entryIsDirectory(entry)) continue
+
+      const details = await parseMod(entry)
+      if (details && details.id) modMap.set(details.id, entry)
+   }
+   return modMap
+}
+
 const WorkshopDirectoryDropZone = (props: Props) => {
    const handleMisClick: MouseEventHandler = useCallback((e) => {
       e.preventDefault()
-      console.log("handleClick:", e)
       throw new Error("you can't click here")
    }, [])
 
    const handleWorkshopDirectoryDrop: DragEventHandler = useCallback(
       async (e) => {
          e.preventDefault()
-         console.log("handleWorkshopDirectorySelect:", e)
 
          const droppedItems = e.dataTransfer.items
          if (droppedItems.length !== 1) throw new Error("too many directories selected")
 
-         const workshopDirectory = droppedItems[0].webkitGetAsEntry()
-         console.log("workshopDirectory:", workshopDirectory)
+         const workshopItemEntries = await entriesOfDroppedItems(droppedItems)
 
-         if (!workshopDirectory) throw new Error("no directory selected")
+         const workshopItems = await modMapOfFileSystemEntries(workshopItemEntries)
 
-         props.setWorkshopDirectory(workshopDirectory)
+         props.setWorkshopDirectory(workshopItems)
       },
       [props.setWorkshopDirectory],
    )
@@ -69,7 +145,6 @@ const SelectFileButton = (props: Props) => {
    const handleModsConfigFileSelect: MouseEventHandler = useCallback(
       async (e) => {
          e.preventDefault()
-         console.log("handleModsConfigFileSelect:", e)
 
          const modsConfigFile = await fileOpen({
             startIn: "documents",
@@ -77,8 +152,6 @@ const SelectFileButton = (props: Props) => {
             description: "ModsConfig.xml", // unintuitively, this shows up as a 'filetype' to user
             id: "rimworld-modsconfig-xml",
          })
-
-         console.log("modsConfigFile:", modsConfigFile)
 
          props.setModsConfigFile(modsConfigFile)
          props.setFileIsSelected(true)

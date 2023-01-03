@@ -1,3 +1,9 @@
+async function filePromise(entry: FileSystemFileEntry): Promise<File> {
+   return await new Promise((resolve, reject): void => {
+      entry.file(resolve, reject)
+   })
+}
+
 // Adapted from <https://stackoverflow.com/a/53058574>, then
 // <https://github.com/koel/koel/blob/4c923fae/resources/assets/js/utils/directoryReader.ts>
 async function readEntriesPromise(
@@ -22,14 +28,11 @@ async function readAllDirectoryEntries(
    return entries
 }
 
-async function getAllFileEntries(dataTransferItemList: DataTransferItemList) {
-   const fileEntries: FileSystemEntry[] = []
-   const queue: FileSystemEntry[] = []
-
-   for (let i = 0, length = dataTransferItemList.length; i < length; i++) {
-      queue.push(dataTransferItemList[i].webkitGetAsEntry()!)
-   }
-
+// modifies the first argument
+async function entriesOfDirectories(
+   queue: FileSystemEntry[],
+   entries: FileSystemEntry[] = [],
+): Promise<FileSystemEntry[]> {
    while (queue.length > 0) {
       const entry = queue.shift()
 
@@ -38,14 +41,26 @@ async function getAllFileEntries(dataTransferItemList: DataTransferItemList) {
       }
 
       if (entry.isFile) {
-         fileEntries.push(entry)
+         entries.push(entry)
       } else if (entry.isDirectory) {
          // @ts-ignore
-         queue.push(...(await readAllDirectoryEntries(entry.createReader())))
+         entries.push(...(await readAllDirectoryEntries(entry.createReader())))
       }
    }
 
-   return fileEntries
+   return entries
 }
 
-export { getAllFileEntries }
+async function entriesOfDroppedItems(dataTransferItemList: DataTransferItemList) {
+   const queue: FileSystemEntry[] = []
+
+   for (let i = 0, length = dataTransferItemList.length; i < length; i++) {
+      queue.push(dataTransferItemList[i].webkitGetAsEntry()!)
+   }
+
+   const entries = entriesOfDirectories(queue)
+
+   return entries
+}
+
+export { filePromise, entriesOfDroppedItems, entriesOfDirectories }
