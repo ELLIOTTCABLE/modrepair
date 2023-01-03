@@ -1,3 +1,11 @@
+const entryIsFile = (entry: FileSystemEntry): entry is FileSystemFileEntry => {
+   return entry.isFile
+}
+
+const entryIsDirectory = (entry: FileSystemEntry): entry is FileSystemDirectoryEntry => {
+   return entry.isDirectory
+}
+
 async function filePromise(entry: FileSystemFileEntry): Promise<File> {
    return await new Promise((resolve, reject): void => {
       entry.file(resolve, reject)
@@ -63,4 +71,10 @@ async function entriesOfDroppedItems(dataTransferItemList: DataTransferItemList)
    return entries
 }
 
-export { filePromise, entriesOfDroppedItems, entriesOfDirectories }
+export {
+   entryIsFile,
+   entryIsDirectory,
+   filePromise,
+   entriesOfDroppedItems,
+   entriesOfDirectories,
+}

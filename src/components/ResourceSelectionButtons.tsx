@@ -6,15 +6,9 @@ import { Button } from "dracula-ui"
 import { fileOpen } from "browser-fs-access"
 import type { FileWithHandle } from "browser-fs-access"
 
-import {
-   filePromise,
-   entriesOfDroppedItems,
-   entriesOfDirectories,
-} from "../utils/directoryReader"
+import { entryIsDirectory, entriesOfDroppedItems } from "../utils/directoryReader"
 
-export type ModInfo = {
-   id: string
-}
+import { parseMod } from "../utils/rimworldModMetaData"
 
 export interface Props {
    fileIsSelected: boolean
@@ -34,72 +28,16 @@ const ResourceSelectionButtons = (props: Props) => {
    )
 }
 
-const entryIsDirectory = (entry: FileSystemEntry): entry is FileSystemDirectoryEntry => {
-   return entry.isDirectory
-}
-
-const entryIsFile = (entry: FileSystemEntry): entry is FileSystemFileEntry => {
-   return entry.isFile
-}
-
-const parseModAboutXml = async (
-   alternativeId: string,
-   modAboutXml: FileSystemFileEntry,
-) => {
-   const modAboutXmlContent = await filePromise(modAboutXml)
-   const modAboutXmlContentText = await modAboutXmlContent.text()
-
-   const parser = new DOMParser()
-   const modAboutXmlDocument = parser.parseFromString(modAboutXmlContentText, "text/xml")
-   const root = modAboutXmlDocument.documentElement
-
-   if (root?.tagName !== "ModMetaData") {
-      console.error(`mod ${alternativeId}: no <ModMetaData/> found`, root)
-   }
-
-   const packageId = root.getElementsByTagName("packageId")[0]?.textContent
-   const name = root.getElementsByTagName("name")[0]?.textContent
-   const errorId = `${alternativeId}, ${packageId || name}`
-   if (!packageId) console.error(`mod ${errorId}: no <packageId/> found`, root)
-   if (!name) console.error(`mod ${errorId}: no <name/> found`, root)
-
-   return {
-      id: packageId,
-      name,
-   }
-}
-
-const parseMod = async (modFileSystemEntry: FileSystemDirectoryEntry) => {
-   const alternativeId = modFileSystemEntry.name
-   const modEntries = await entriesOfDirectories([modFileSystemEntry])
-
-   const modAboutFolder = modEntries.find((entry) => entry.name === "About")
-   if (!modAboutFolder)
-      return console.error(`workshop item ${alternativeId}: no About folder found`)
-
-   if (!entryIsDirectory(modAboutFolder))
-      return console.error(`workshop item ${alternativeId}: About/ is not a directory`)
-
-   const modAboutEntries = await entriesOfDirectories([modAboutFolder])
-   const modAboutXml = modAboutEntries.find((entry) => entry.name === "About.xml")
-   if (!modAboutXml)
-      return console.error(`workshop item ${alternativeId}: no About/About.xml found`)
-
-   if (!entryIsFile(modAboutXml))
-      return console.error(
-         `workshop item ${alternativeId}: About/About.xml is not a file`,
-      )
-   return parseModAboutXml(alternativeId, modAboutXml)
-}
-
 const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
+   console.time("modMapOfFileSystemEntries")
    const modMap = new Map<string, FileSystemEntry>()
    for (const entry of entries) {
       if (!entryIsDirectory(entry)) continue
 
-      const details = await parseMod(entry)
-      if (details && details.id) modMap.set(details.id, entry)
+      const modMetaData = await parseMod("SteamWorkshop", entry)
+      if (modMetaData && modMetaData.packageId) modMap.set(modMetaData.packageId, entry)
    }
+   console.timeEnd("modMapOfFileSystemEntries")
    return modMap
 }
 
@@ -112,6 +50,7 @@ const WorkshopDirectoryDropZone = (props: Props) => {
    const handleWorkshopDirectoryDrop: DragEventHandler = useCallback(
       async (e) => {
          e.preventDefault()
+         console.groupCollapsed("handleWorkshopDirectoryDrop")
 
          const droppedItems = e.dataTransfer.items
          if (droppedItems.length !== 1) throw new Error("too many directories selected")
@@ -121,6 +60,9 @@ const WorkshopDirectoryDropZone = (props: Props) => {
          const workshopItems = await modMapOfFileSystemEntries(workshopItemEntries)
 
          props.setWorkshopDirectory(workshopItems)
+
+         // @ts-ignore
+         console.groupEnd("handleWorkshopDirectoryDrop")
       },
       [props.setWorkshopDirectory],
    )
