@@ -8,7 +8,7 @@ import type { FileWithHandle } from "browser-fs-access"
 
 import { entryIsDirectory, entriesOfDroppedItems } from "../utils/directoryReader"
 
-import { parseMod } from "../utils/rimworldModMetaData"
+import { ModMetaData, parseMod } from "../utils/rimworldModMetaData"
 
 export interface Props {
    fileIsSelected: boolean
@@ -30,12 +30,13 @@ const ResourceSelectionButtons = (props: Props) => {
 
 const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
    console.time("modMapOfFileSystemEntries")
-   const modMap = new Map<string, FileSystemEntry>()
+   const modMap = new Map<string, ModMetaData>()
    for (const entry of entries) {
       if (!entryIsDirectory(entry)) continue
 
       const modMetaData = await parseMod("SteamWorkshop", entry)
-      if (modMetaData && modMetaData.packageId) modMap.set(modMetaData.packageId, entry)
+      if (modMetaData && modMetaData.packageId)
+         modMap.set(modMetaData.packageId, modMetaData)
    }
    console.timeEnd("modMapOfFileSystemEntries")
    return modMap

@@ -137,7 +137,8 @@ const TryParsePackageId = (m: {
    return m as ModMetaData
 }
 
-const Init = (contentSource: ContentSource, folderName: string, xml: Document) => {
+// Not-quite-one-to-one implementation of Rimworld's own ModMetaData type. I tried my best to reproduce everything up to the `packageId` determination; but I'm implementing the dependency-parsing externally.
+const Init = (contentSource: ContentSource, folderName: string, root: Element) => {
    /*
    // Verse.ModMetaData
    private void Init()
@@ -166,7 +167,6 @@ const Init = (contentSource: ContentSource, folderName: string, xml: Document) =
       }
    }
    */
-   const root = xml.documentElement
 
    let name = root.getElementsByTagName("name")[0]?.textContent
 
