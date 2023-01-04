@@ -73,18 +73,22 @@ const WorkshopDirectoryDropZone = (props: Props) => {
       [props.setWorkshopDir],
    )
 
-   let isNextStep = !props.workshopDir && props.fileIsSelected
+   const isNextStep = !props.workshopDir && props.fileIsSelected
+   const isProcessing = props.workshopDir && !props.modMap
+   function whileNotProcessing<T>(v: T): T | undefined {
+      return isProcessing ? undefined : v
+   }
 
    return (
       <Button
-         variant={props.workshopDir ? "outline" : undefined}
+         variant={isProcessing ? "ghost" : props.workshopDir ? "outline" : undefined}
          color={isNextStep ? "animated" : "cyan"}
-         onClick={handleMisClick}
-         onDragOver={(e) => {
+         onClick={whileNotProcessing(handleMisClick)}
+         onDragOver={whileNotProcessing((e) => {
             e.preventDefault()
-         }}
-         onDrop={handleWorkshopDirectoryDrop}>
-         Drag & drop Workshop "294100" directory here
+         })}
+         onDrop={whileNotProcessing(handleWorkshopDirectoryDrop)}>
+         {isProcessing ? "Processing mods…" : '2. Drop "294100" directory'}
       </Button>
    )
 }
@@ -112,7 +116,7 @@ const SelectFileButton = (props: Props) => {
          variant={props.fileIsSelected ? "outline" : undefined}
          color={props.fileIsSelected ? "cyan" : "animated"}
          onClick={handleModsConfigFileSelect}>
-         Select ModsConfig.xml
+         1. Select ModsConfig.xml
       </Button>
    )
 }
