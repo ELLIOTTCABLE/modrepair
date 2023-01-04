@@ -16,7 +16,7 @@ import { plainText as exampleModsConfigContent } from "@virtual:plain-text/examp
 
 const Header = (props: ResourceSelectionButtonsProps) => {
    return (
-      <Box m="sm">
+      <Box as="header">
          <ResourceSelectionButtons {...props} />
       </Box>
    )
@@ -33,7 +33,7 @@ function App() {
    const [modMap, setModMap] = useState<ModMap | undefined>()
 
    return (
-      <Box px="md" id="flex-wrapper">
+      <>
          <Header
             fileIsSelected={fileIsSelected}
             setFileIsSelected={setFileIsSelected}
@@ -45,7 +45,7 @@ function App() {
             setModMap={setModMap}
          />
          <Editor modsConfigFile={modsConfigFile} />
-      </Box>
+      </>
    )
 }
 
