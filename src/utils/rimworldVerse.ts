@@ -180,6 +180,8 @@ const Init = (contentSource: ContentSource, folderName: string, xml: Document) =
       description: root.getElementsByTagName("description")[0]?.textContent || undefined,
    })
 
+   if ("SteamWorkshop" === contentSource) mod.workshopId = folderName
+
    return mod
 }
 

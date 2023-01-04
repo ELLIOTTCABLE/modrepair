@@ -13,8 +13,11 @@ export type ContentSource =
    | "ModsFolder"
    | "SteamWorkshop"
 
-export type ModMetaData = {
-   contentSource: ContentSource
+export type ModMetaData = WorkshopModMetaData
+
+export type WorkshopModMetaData = {
+   contentSource: "SteamWorkshop"
+   workshopId: string
    packageId: string
    name: string
    author?: string
@@ -32,7 +35,7 @@ const parseModAboutXml = async (
    const parser = new DOMParser()
    const modAboutXmlDocument = parser.parseFromString(modAboutXmlContentText, "text/xml")
 
-   const mod = Verse.ModMetaData.Init("SteamWorkshop", folderName, modAboutXmlDocument)
+   const mod = Verse.ModMetaData.Init(contentSource, folderName, modAboutXmlDocument)
 
    return mod
 }
