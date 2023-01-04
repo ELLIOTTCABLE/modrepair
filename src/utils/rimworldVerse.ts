@@ -17,10 +17,18 @@ const StableStringHash = (str: string) => {
    }
    */
 
-   let num = 23n
+   let num = 23
    const length = str.length
    for (let i = 0; i < length; i++) {
-      num = num * 31n + BigInt(str.charCodeAt(i))
+      const char = str.charCodeAt(i)
+      // let before = num
+
+      num = Math.imul(num, 31) + char
+      // console.log(
+      //    `str[${i.toString().padStart(4, "0")}] (${String.fromCharCode(
+      //       char,
+      //    )}): ${num} = ${before} * 31 + ${char}`,
+      // )
    }
    return num
 }
@@ -99,7 +107,7 @@ const TryParsePackageId = (m: {
       let author = m.author
 
       if (null == author || author.length === 0) {
-         author = "Anonymous"
+         author = ""
          console.error(
             `mod metadata error: ${m.name}: no <author/> found while generating substitute <packageId/>`,
             m,
@@ -107,7 +115,9 @@ const TryParsePackageId = (m: {
       }
 
       if (null != m.description && m.description.length > 0) {
-         text = Math.abs(StableStringHash(m.description)).toString()
+         const desc = m.description.replaceAll("\n", "\r\n")
+
+         text = Math.abs(StableStringHash(desc)).toString()
          text = text.substring(0, Math.min(3, text.length))
       } else {
          // "none" leaking through the hashing in this case appears to be a bug in
