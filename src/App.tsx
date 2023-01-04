@@ -10,6 +10,8 @@ import ResourceSelectionButtons, {
 } from "./components/ResourceSelectionButtons"
 import Editor from "./components/Editor"
 
+import type { ModMap } from "./utils/rimworldModMetaData"
+
 import { plainText as exampleModsConfigContent } from "@virtual:plain-text/exampleModsConfig.xml"
 
 const Header = (props: ResourceSelectionButtonsProps) => {
@@ -27,9 +29,8 @@ function App() {
 
    const [modsConfigFile, setModsConfigFile] = useState<FileWithHandle>(exampleModsConfig)
    const [fileIsSelected, setFileIsSelected] = useState(false)
-   const [workshopDirectory, setWorkshopDirectory] = useState<
-      FileWithDirectoryAndFileHandle | undefined
-   >()
+   const [workshopDir, setWorkshopDir] = useState<FileSystemEntry | undefined>()
+   const [modMap, setModMap] = useState<ModMap | undefined>()
 
    return (
       <Box px="md" id="flex-wrapper">
@@ -38,8 +39,10 @@ function App() {
             setFileIsSelected={setFileIsSelected}
             modsConfigFile={modsConfigFile}
             setModsConfigFile={setModsConfigFile}
-            workshopDirectory={workshopDirectory}
-            setWorkshopDirectory={setWorkshopDirectory}
+            workshopDir={workshopDir}
+            setWorkshopDir={setWorkshopDir}
+            modMap={modMap}
+            setModMap={setModMap}
          />
          <Editor modsConfigFile={modsConfigFile} />
       </Box>

@@ -6,17 +6,19 @@ import { Button } from "dracula-ui"
 import { fileOpen } from "browser-fs-access"
 import type { FileWithHandle } from "browser-fs-access"
 
-import { entryIsDirectory, entriesOfDroppedItems } from "../utils/directoryReader"
+import { entryIsDirectory, entriesOfDirectories } from "../utils/directoryReader"
 
-import { ModMetaData, parseMod } from "../utils/rimworldModMetaData"
+import { ModMap, parseMod } from "../utils/rimworldModMetaData"
 
 export interface Props {
    fileIsSelected: boolean
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
    modsConfigFile: FileWithHandle
    setModsConfigFile: Dispatch<SetStateAction<FileWithHandle>>
-   workshopDirectory: FileSystemEntry | undefined
-   setWorkshopDirectory: Dispatch<SetStateAction<FileSystemEntry | undefined>>
+   workshopDir: FileSystemEntry | undefined
+   setWorkshopDir: Dispatch<SetStateAction<FileSystemEntry | undefined>>
+   modMap: ModMap | undefined
+   setModMap: Dispatch<SetStateAction<ModMap | undefined>>
 }
 
 const ResourceSelectionButtons = (props: Props) => {
@@ -30,7 +32,7 @@ const ResourceSelectionButtons = (props: Props) => {
 
 const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
    console.time("modMapOfFileSystemEntries")
-   const modMap = new Map<string, ModMetaData>()
+   const modMap: ModMap = new Map()
    for (const entry of entries) {
       if (!entryIsDirectory(entry)) continue
 
@@ -54,25 +56,28 @@ const WorkshopDirectoryDropZone = (props: Props) => {
          console.groupCollapsed("handleWorkshopDirectoryDrop")
 
          const droppedItems = e.dataTransfer.items
+         const droppedItem = droppedItems[0].webkitGetAsEntry()
          if (droppedItems.length !== 1) throw new Error("too many directories selected")
+         if (!droppedItem) throw new Error("no directory selected")
 
-         const workshopItemEntries = await entriesOfDroppedItems(droppedItems)
+         props.setWorkshopDir(droppedItem)
 
-         const workshopItems = await modMapOfFileSystemEntries(workshopItemEntries)
+         const workshopItemEntries = await entriesOfDirectories([droppedItem])
+         const modMap = await modMapOfFileSystemEntries(workshopItemEntries)
 
-         props.setWorkshopDirectory(workshopItems)
+         props.setModMap(modMap)
 
          // @ts-ignore
          console.groupEnd("handleWorkshopDirectoryDrop")
       },
-      [props.setWorkshopDirectory],
+      [props.setWorkshopDir],
    )
 
-   let isNextStep = !props.workshopDirectory && props.fileIsSelected
+   let isNextStep = !props.workshopDir && props.fileIsSelected
 
    return (
       <Button
-         variant={props.workshopDirectory ? "outline" : undefined}
+         variant={props.workshopDir ? "outline" : undefined}
          color={isNextStep ? "animated" : "cyan"}
          onClick={handleMisClick}
          onDragOver={(e) => {

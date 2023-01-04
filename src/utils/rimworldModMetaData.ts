@@ -19,6 +19,8 @@ export type ContentSource =
 
 export type PackageId = string & { __packageId: never }
 
+export type ModMap = Map<PackageId, ModMetaData>
+
 type ModDependency = {
    packageId: PackageId
    displayName: string

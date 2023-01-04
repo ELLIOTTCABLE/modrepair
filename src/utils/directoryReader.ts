@@ -59,22 +59,4 @@ async function entriesOfDirectories(
    return entries
 }
 
-async function entriesOfDroppedItems(dataTransferItemList: DataTransferItemList) {
-   const queue: FileSystemEntry[] = []
-
-   for (let i = 0, length = dataTransferItemList.length; i < length; i++) {
-      queue.push(dataTransferItemList[i].webkitGetAsEntry()!)
-   }
-
-   const entries = entriesOfDirectories(queue)
-
-   return entries
-}
-
-export {
-   entryIsFile,
-   entryIsDirectory,
-   filePromise,
-   entriesOfDroppedItems,
-   entriesOfDirectories,
-}
+export { entryIsFile, entryIsDirectory, filePromise, entriesOfDirectories }
