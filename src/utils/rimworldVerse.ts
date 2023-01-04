@@ -178,7 +178,7 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
       console.warn(`mod metadata error: ${name}: no <name/> found`, root)
    }
 
-   if (root?.tagName !== "ModMetaData") {
+   if (root?.tagName.toLowerCase() !== "modmetadata") {
       console.error(`mod metadata error: ${name}: no <ModMetaData/> found`, root)
    }
 
