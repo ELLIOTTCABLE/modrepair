@@ -5,3 +5,4 @@ semi: false
 trailingComma: "all"
 jsxBracketSameLine: true
 endOfLine: "lf"
+arrowParens: "avoid"
