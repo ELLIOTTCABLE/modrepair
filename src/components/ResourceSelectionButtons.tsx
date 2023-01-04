@@ -82,7 +82,7 @@ const WorkshopDirectoryDropZone = (props: Props) => {
    return (
       <Button
          variant={isProcessing ? "ghost" : props.workshopDir ? "outline" : undefined}
-         color={isNextStep ? "animated" : "cyan"}
+         color={isNextStep ? "animated" : "pink"}
          onClick={whileNotProcessing(handleMisClick)}
          onDragOver={whileNotProcessing((e) => {
             e.preventDefault()
@@ -114,7 +114,7 @@ const SelectFileButton = (props: Props) => {
    return (
       <Button
          variant={props.fileIsSelected ? "outline" : undefined}
-         color={props.fileIsSelected ? "cyan" : "animated"}
+         color={props.fileIsSelected ? "pink" : "animated"}
          onClick={handleModsConfigFileSelect}>
          1. Select ModsConfig.xml
       </Button>

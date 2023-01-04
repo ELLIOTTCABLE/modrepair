@@ -7,6 +7,13 @@
 #flex-wrapper > header button {
    height: auto;
    padding: var(--spacing-xs) var(--spacing-sm);
-   line-height: normal;
+   line-height: var(--line-height-sm);
    font-size: var(--font-sm);
+}
+
+#flex-wrapper > footer {
+   border-style: solid;
+   border-width: 2px 0 0 0;
+   border-radius: var(--rounded-lg);
+   border-color: var(--pink);
 }

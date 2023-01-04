@@ -3,7 +3,7 @@ import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-
 
 import "./App.css"
 import "dracula-ui/styles/dracula-ui.css"
-import { Box } from "dracula-ui"
+import { Box, Text, Anchor } from "dracula-ui"
 
 import ResourceSelectionButtons, {
    type Props as ResourceSelectionButtonsProps,
@@ -18,6 +18,19 @@ const Header = (props: ResourceSelectionButtonsProps) => {
    return (
       <Box as="header">
          <ResourceSelectionButtons {...props} />
+      </Box>
+   )
+}
+
+const Footer = () => {
+   return (
+      <Box as="footer" p="xs">
+         <Text size="lg">
+            Made in the 🏔️ with 💗 by{" "}
+            <Anchor href="http://ell.io/tt" color="pinkPurple" hoverColor="cyanGreen">
+               ELLIOTTCABLE
+            </Anchor>
+         </Text>
       </Box>
    )
 }
@@ -45,6 +58,7 @@ function App() {
             setModMap={setModMap}
          />
          <Editor modsConfigFile={modsConfigFile} />
+         <Footer />
       </>
    )
 }
