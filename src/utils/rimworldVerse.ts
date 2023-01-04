@@ -102,7 +102,6 @@ const TryParsePackageId = (m: {
    */
 
    if (null == m.packageId || m.packageId.length === 0) {
-      debugger
       let text = "none"
       let author = m.author
 

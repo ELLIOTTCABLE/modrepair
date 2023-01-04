@@ -51,7 +51,7 @@ const helpers = (mod: ModMetaData) => {
    return {
       expectMaxOne: (node: Element, tagName: string) => {
          const resultElements = node.getElementsByTagName(tagName)
-         if (resultElements.length >= 1)
+         if (resultElements.length > 1)
             console.error(
                `${descriptor}: more than one <${tagName}/> found in <${node.tagName}/>`,
                mod,
