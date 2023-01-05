@@ -1,3 +1,10 @@
+body {
+   font-family: var(--fira-sans);
+   font-weight: var(--sans-weight-sm);
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+}
+
 #flex-wrapper > header {
    display: flex;
    padding: var(--spacing-xxs);

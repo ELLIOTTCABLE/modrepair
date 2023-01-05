@@ -1,8 +1,13 @@
 import { useState } from "react"
 import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-access"
 
+import "@fontsource/fira-code/latin-300.css" // fallback; make sure this matches `--code-weight-sm` in index.css
+import "@fontsource/fira-code/variable.css"
+
+import "@fontsource/fira-sans/latin.css"
+
 import "./App.css"
-import "dracula-ui/styles/dracula-ui.css"
+import "dracula-ui/styles/dracula-ui.css" // TODO: post-process to remove Google Fonts -_-
 import { Box, Text, Anchor } from "dracula-ui"
 
 import ResourceSelectionButtons, {

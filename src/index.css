@@ -1,5 +1,22 @@
 :root {
    --rounded-lg: 0;
+
+   --fira-sans: "Fira Sans", system-ui, /* macOS 10.11-10.12 */ -apple-system,
+      /* Windows 6+ */ "Segoe UI", /* Android 4+ */ "Roboto", /* Ubuntu 10.10+ */ "Ubuntu",
+      /* Gnome 3+ */ "Cantarell", /* KDE Plasma 5+ */ "Noto Sans",
+      /* fallback */ sans-serif, /* macOS emoji */ "Apple Color Emoji",
+      /* Windows emoji */ "Segoe UI Emoji", /* Windows emoji */ "Segoe UI Symbol",
+      /* Linux emoji */ "Noto Color Emoji";
+   --sans-weight-sm: 400;
+
+   --fira-code: "Fira Code", ui-monospace, /* macOS 10.10+ */ "Menlo",
+      /* Windows 6+ */ "Consolas", /* Android 4+ */ "Roboto Mono",
+      /* Ubuntu 10.10+ */ "Ubuntu Monospace", /* KDE Plasma 5+ */ "Noto Mono",
+      /* KDE Plasma 4+ */ "Oxygen Mono", /* Linux/OpenOffice fallback */ "Liberation Mono",
+      /* fallback */ monospace, /* macOS emoji */ "Apple Color Emoji",
+      /* Windows emoji */ "Segoe UI Emoji", /* Windows emoji */ "Segoe UI Symbol",
+      /* Linux emoji */ "Noto Color Emoji";
+   --code-weight-sm: 300;
 }
 
 body,
@@ -9,19 +26,21 @@ html {
    background-color: var(--black);
 }
 
-body {
-   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-      "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-   -webkit-font-smoothing: antialiased;
-   -moz-osx-font-smoothing: grayscale;
-}
-
 #flex-wrapper {
    display: flex;
    flex-direction: column;
    height: 100%;
 }
 
+/* Dracula UI overrides 🤦 */
+.drac-heading,
+.drac-select,
+.drac-input,
+.drac-text,
+.drac-btn {
+   font-family: var(--fira-sans) !important;
+}
+
 code {
-   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+   font-family: var(--fira-code) !important;
 }
