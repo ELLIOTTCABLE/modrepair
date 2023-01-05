@@ -10,6 +10,12 @@ import { entryIsDirectory, entriesOfDirectories } from '../utils/directoryReader
 
 import { ModMap, parseMod } from '../utils/rimworldModMetaData'
 
+declare global {
+   interface Console {
+      groupEnd(label: string): void
+   }
+}
+
 export interface Props {
    fileIsSelected: boolean
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
@@ -73,7 +79,6 @@ const WorkshopDirectoryDropZone = ({
 
          setModMap(modMap)
 
-         // @ts-ignore
          console.groupEnd('handleWorkshopDirectoryDrop')
       },
       [setWorkshopDir, setModMap],

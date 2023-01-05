@@ -7,6 +7,12 @@ import type * as MonacoT from 'monaco-editor'
 
 import draculaThemeData from '../Dracula.monacotheme.json'
 
+declare global {
+   interface Console {
+      groupEnd(label: string): void
+   }
+}
+
 export interface Props {
    modsConfigFile: File
    fileIsSelected?: boolean
@@ -36,8 +42,6 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
          const newContent = editorRef.current?.getModel()?.getValue()
          console.groupCollapsed('handleModelContentDidChange')
          console.log('handleModelContentDidChange:', newContent, ev)
-
-         // @ts-ignore
          console.groupEnd('handleModelContentDidChange')
          setContent(newContent || '')
       },
