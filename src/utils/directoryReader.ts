@@ -1,3 +1,9 @@
+declare global {
+   interface FileSystemEntry {
+      createReader(): FileSystemDirectoryReader
+   }
+}
+
 const entryIsFile = (entry: FileSystemEntry): entry is FileSystemFileEntry => {
    return entry.isFile
 }
@@ -51,7 +57,6 @@ async function entriesOfDirectories(
       if (entry.isFile) {
          entries.push(entry)
       } else if (entry.isDirectory) {
-         // @ts-ignore
          entries.push(...(await readAllDirectoryEntries(entry.createReader())))
       }
    }
