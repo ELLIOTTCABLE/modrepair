@@ -8,8 +8,8 @@ import type { FileWithHandle } from 'browser-fs-access'
 
 import { entryIsDirectory, entriesOfDirectories } from '../utils/directoryReader'
 
-import { parseMod } from '../utils/rimworldModMetaData'
-import type { ModMap } from '../utils/rimworldModMetaData'
+import { parseMod } from '../utils/rimworld/modMetaData'
+import type { ModMap } from '../utils/rimworld/modMetaData'
 
 declare global {
    interface Console {

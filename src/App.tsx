@@ -15,7 +15,7 @@ import ResourceSelectionButtons, {
 } from './components/ResourceSelectionButtons'
 import Editor from './components/Editor'
 
-import type { ModMap } from './utils/rimworldModMetaData'
+import type { ModMap } from './utils/rimworld/modMetaData'
 
 import { plainText as exampleModsConfigContent } from '@virtual:plain-text/exampleModsConfig.xml'
 

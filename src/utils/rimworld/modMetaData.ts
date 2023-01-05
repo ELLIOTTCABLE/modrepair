@@ -3,9 +3,9 @@ import {
    entryIsDirectory,
    filePromise,
    entriesOfDirectories,
-} from '../utils/directoryReader'
+} from '../directoryReader'
 
-import Verse from './rimworldVerse'
+import Verse from './verse'
 
 export const knownVersions = ['1.4', '1.3', '1.2', '1.1', '1.0'] as const
 
