@@ -23,7 +23,7 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
    useAsyncEffect(
-      async isStillMounted => {
+      async function modsConfigFileChanged(isStillMounted) {
          const modsConfigText = await modsConfigFile.text()
          if (!isStillMounted()) return
 

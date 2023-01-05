@@ -8,7 +8,8 @@ import type { FileWithHandle } from 'browser-fs-access'
 
 import { entryIsDirectory, entriesOfDirectories } from '../utils/directoryReader'
 
-import { ModMap, parseMod } from '../utils/rimworldModMetaData'
+import { parseMod } from '../utils/rimworldModMetaData'
+import type { ModMap } from '../utils/rimworldModMetaData'
 
 declare global {
    interface Console {
@@ -21,9 +22,9 @@ export interface Props {
    setFileIsSelected: Dispatch<SetStateAction<boolean>>
    modsConfigFile: FileWithHandle
    setModsConfigFile: Dispatch<SetStateAction<FileWithHandle>>
-   workshopDir: FileSystemEntry | undefined
+   workshopDir?: FileSystemEntry
    setWorkshopDir: Dispatch<SetStateAction<FileSystemEntry | undefined>>
-   modMap: ModMap | undefined
+   modMap?: ModMap
    setModMap: Dispatch<SetStateAction<ModMap | undefined>>
 }
 

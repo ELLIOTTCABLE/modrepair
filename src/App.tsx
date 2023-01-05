@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { FileWithHandle, FileWithDirectoryAndFileHandle } from 'browser-fs-access'
+import type { FileWithHandle } from 'browser-fs-access'
 
 import '@fontsource/fira-code/latin-300.css' // fallback; make sure this matches `--code-weight-sm` in index.css
 import '@fontsource/fira-code/variable.css'
