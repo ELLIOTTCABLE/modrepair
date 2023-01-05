@@ -3,6 +3,8 @@ modrepair
 
 A bit of learning React, a bit of scratching an itch, and a bit of trying-to-make-programming-fun-again.
 
+![a screenshot of a small Chrome browser window, containing an XML file inside a text-editor, with buttons for manipulating that file](https://user-images.githubusercontent.com/200/210870348-efab4b3e-2d77-4b04-a99f-850cde617063.png)
+
 Criterion
 ---------
 
