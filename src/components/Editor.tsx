@@ -34,8 +34,12 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
    const handleModelContentDidChange = useCallback(
       (ev: MonacoT.editor.IModelContentChangedEvent) => {
          const newContent = editorRef.current?.getModel()?.getValue()
-         console.log('handleModelContentDidChange', newContent, ev)
-         if (newContent !== content) setContent(newContent || '')
+         console.groupCollapsed('handleModelContentDidChange')
+         console.log('handleModelContentDidChange:', newContent, ev)
+
+         // @ts-ignore
+         console.groupEnd('handleModelContentDidChange')
+         setContent(newContent || '')
       },
       [editorRef, setContent],
    )

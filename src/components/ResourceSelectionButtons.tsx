@@ -44,7 +44,13 @@ const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
    return modMap
 }
 
-const WorkshopDirectoryDropZone = (props: Props) => {
+const WorkshopDirectoryDropZone = ({
+   fileIsSelected,
+   workshopDir,
+   setWorkshopDir,
+   modMap,
+   setModMap,
+}: Props) => {
    const handleMisClick: MouseEventHandler = useCallback(e => {
       e.preventDefault()
       throw new Error("you can't click here")
@@ -60,28 +66,28 @@ const WorkshopDirectoryDropZone = (props: Props) => {
          if (droppedItems.length !== 1) throw new Error('too many directories selected')
          if (!droppedItem) throw new Error('no directory selected')
 
-         props.setWorkshopDir(droppedItem)
+         setWorkshopDir(droppedItem)
 
          const workshopItemEntries = await entriesOfDirectories([droppedItem])
          const modMap = await modMapOfFileSystemEntries(workshopItemEntries)
 
-         props.setModMap(modMap)
+         setModMap(modMap)
 
          // @ts-ignore
          console.groupEnd('handleWorkshopDirectoryDrop')
       },
-      [props.setWorkshopDir],
+      [setWorkshopDir, setModMap],
    )
 
-   const isNextStep = !props.workshopDir && props.fileIsSelected
-   const isProcessing = props.workshopDir && !props.modMap
+   const isNextStep = !workshopDir && fileIsSelected
+   const isProcessing = workshopDir && !modMap
    function whileNotProcessing<T>(v: T): T | undefined {
       return isProcessing ? undefined : v
    }
 
    return (
       <Button
-         variant={isProcessing ? 'ghost' : props.workshopDir ? 'outline' : undefined}
+         variant={isProcessing ? 'ghost' : workshopDir ? 'outline' : undefined}
          color={isNextStep ? 'animated' : 'pink'}
          onClick={whileNotProcessing(handleMisClick)}
          onDragOver={whileNotProcessing(e => {
@@ -93,7 +99,11 @@ const WorkshopDirectoryDropZone = (props: Props) => {
    )
 }
 
-const SelectFileButton = (props: Props) => {
+const SelectFileButton = ({
+   setModsConfigFile,
+   fileIsSelected,
+   setFileIsSelected,
+}: Props) => {
    const handleModsConfigFileSelect: MouseEventHandler = useCallback(
       async e => {
          e.preventDefault()
@@ -105,16 +115,16 @@ const SelectFileButton = (props: Props) => {
             id: 'rimworld-modsconfig-xml',
          })
 
-         props.setModsConfigFile(modsConfigFile)
-         props.setFileIsSelected(true)
+         setModsConfigFile(modsConfigFile)
+         setFileIsSelected(true)
       },
-      [props.setModsConfigFile, props.setFileIsSelected],
+      [setModsConfigFile, setFileIsSelected],
    )
 
    return (
       <Button
-         variant={props.fileIsSelected ? 'outline' : undefined}
-         color={props.fileIsSelected ? 'pink' : 'animated'}
+         variant={fileIsSelected ? 'outline' : undefined}
+         color={fileIsSelected ? 'pink' : 'animated'}
          onClick={handleModsConfigFileSelect}>
          1. Select ModsConfig.xml
       </Button>
