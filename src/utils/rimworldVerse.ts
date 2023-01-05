@@ -1,4 +1,4 @@
-import type { ContentSource, ModMetaData } from "./rimworldModMetaData"
+import type { ContentSource, ModMetaData } from './rimworldModMetaData'
 
 // A one-to-one reimplementation of Rimworld's `Verse.GenText.StableStringHash`
 // method. (This will likely fail on non-ASCII text, due to JavaScript and C#/CIL
@@ -66,7 +66,7 @@ const ConvertToASCII = (str: string) => {
    }
    */
 
-   let result = ""
+   let result = ''
    for (let i = 0; i < str.length; i++) {
       let c = str.charCodeAt(i)
       if (!IsLetterOrDigit(c) /*|| c >= 0x80*/) {
@@ -102,11 +102,11 @@ const TryParsePackageId = (m: {
    */
 
    if (null == m.packageId || m.packageId.length === 0) {
-      let text = "none"
+      let text = 'none'
       let author = m.author
 
       if (null == author || author.length === 0) {
-         author = ""
+         author = ''
          console.error(
             `mod metadata error: ${m.name}: no <author/> found while generating substitute <packageId/>`,
             m,
@@ -114,7 +114,7 @@ const TryParsePackageId = (m: {
       }
 
       if (null != m.description && m.description.length > 0) {
-         const desc = m.description.replaceAll("\n", "\r\n")
+         const desc = m.description.replaceAll('\n', '\r\n')
 
          text = Math.abs(StableStringHash(desc)).toString()
          text = text.substring(0, Math.min(3, text.length))
@@ -127,7 +127,7 @@ const TryParsePackageId = (m: {
          )
       }
 
-      m.packageId = ConvertToASCII(author + text) + "." + ConvertToASCII(m.name)
+      m.packageId = ConvertToASCII(author + text) + '.' + ConvertToASCII(m.name)
       console.warn(
          `mod metadata error: ${m.name}: no <packageId/> found; generated ${m.packageId}`,
          m,
@@ -167,10 +167,10 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
    }
    */
 
-   let name = root.getElementsByTagName("name")[0]?.textContent
+   let name = root.getElementsByTagName('name')[0]?.textContent
 
    if (null == name || name.length === 0) {
-      if ("SteamWorkshop" === contentSource) {
+      if ('SteamWorkshop' === contentSource) {
          name = `Workshop mod ${folderName}`
       } else {
          name = folderName
@@ -178,18 +178,18 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
       console.warn(`mod metadata error: ${name}: no <name/> found`, root)
    }
 
-   if (root?.tagName.toLowerCase() !== "modmetadata") {
+   if (root?.tagName.toLowerCase() !== 'modmetadata') {
       console.error(`mod metadata error: ${name}: no <ModMetaData/> found`, root)
    }
 
    let mod = TryParsePackageId({
       name,
-      packageId: root.getElementsByTagName("packageId")[0]?.textContent || undefined,
-      author: root.getElementsByTagName("author")[0]?.textContent || undefined,
-      description: root.getElementsByTagName("description")[0]?.textContent || undefined,
+      packageId: root.getElementsByTagName('packageId')[0]?.textContent || undefined,
+      author: root.getElementsByTagName('author')[0]?.textContent || undefined,
+      description: root.getElementsByTagName('description')[0]?.textContent || undefined,
    })
 
-   if ("SteamWorkshop" === contentSource) mod.workshopId = folderName
+   if ('SteamWorkshop' === contentSource) mod.workshopId = folderName
 
    return mod
 }

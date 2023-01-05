@@ -1,11 +1,11 @@
-import { useState, useRef, useCallback } from "react"
-import { useAsyncEffect } from "use-async-effect"
+import { useState, useRef, useCallback } from 'react'
+import { useAsyncEffect } from 'use-async-effect'
 
-import MonacoEditor from "@monaco-editor/react"
-import type * as MonacoReactT from "@monaco-editor/react"
-import type * as MonacoT from "monaco-editor"
+import MonacoEditor from '@monaco-editor/react'
+import type * as MonacoReactT from '@monaco-editor/react'
+import type * as MonacoT from 'monaco-editor'
 
-import draculaThemeData from "../Dracula.monacotheme.json"
+import draculaThemeData from '../Dracula.monacotheme.json'
 
 export interface Props {
    modsConfigFile: File
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 export default function Editor({ modsConfigFile, fileIsSelected = false }: Props) {
-   const [content, setContent] = useState("<!-- Uninitialized content -->")
+   const [content, setContent] = useState('<!-- Uninitialized content -->')
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
    const updateEditorContent = (content: string) => {
@@ -24,14 +24,14 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
    const handleModelContentDidChange = useCallback(
       (ev: MonacoT.editor.IModelContentChangedEvent) => {
          let newContent = editorRef.current?.getModel()?.getValue()
-         console.log("handleModelContentDidChange", newContent, ev)
-         if (newContent !== content) setContent(newContent || "")
+         console.log('handleModelContentDidChange', newContent, ev)
+         if (newContent !== content) setContent(newContent || '')
       },
       [editorRef, setContent],
    )
 
    useAsyncEffect(
-      async (isStillMounted) => {
+      async isStillMounted => {
          let modsConfigText = await modsConfigFile.text()
          if (!isStillMounted()) return
 
@@ -40,13 +40,13 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
       [modsConfigFile],
    )
 
-   const handleEditorWillMount: MonacoReactT.BeforeMount = (monaco) => {
+   const handleEditorWillMount: MonacoReactT.BeforeMount = monaco => {
       const themeData = draculaThemeData as MonacoT.editor.IStandaloneThemeData
-      monaco.editor.defineTheme("dracula", themeData)
+      monaco.editor.defineTheme('dracula', themeData)
    }
 
    const handleEditorDidMount: MonacoReactT.OnMount = async (editor, _monaco) => {
-      console.log("handleEditorDidMount", editor, _monaco)
+      console.log('handleEditorDidMount', editor, _monaco)
       editorRef.current = editor
 
       updateEditorContent(await modsConfigFile.text())
@@ -55,8 +55,8 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
    }
 
    const root = document.documentElement,
-      cvFiraCode = getComputedStyle(root).getPropertyValue("--fira-code"),
-      cvCodeWeightSm = getComputedStyle(root).getPropertyValue("--code-weight-sm")
+      cvFiraCode = getComputedStyle(root).getPropertyValue('--fira-code'),
+      cvCodeWeightSm = getComputedStyle(root).getPropertyValue('--code-weight-sm')
 
    return (
       <MonacoEditor
@@ -70,10 +70,10 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
             fontWeight: cvCodeWeightSm,
             lineHeight: 1.375, // Dracula --
          }}
-         className="editor"
-         height="100%"
-         theme="dracula"
-         defaultLanguage="xml"
+         className='editor'
+         height='100%'
+         theme='dracula'
+         defaultLanguage='xml'
          // defaultValue={modsConfigFile}
          beforeMount={handleEditorWillMount}
          onMount={handleEditorDidMount}

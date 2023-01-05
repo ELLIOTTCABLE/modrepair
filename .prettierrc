@@ -3,6 +3,8 @@ useTabs: false
 tabWidth: 3
 semi: false
 trailingComma: "all"
-jsxBracketSameLine: true
+singleQuote: true
+jsxSingleQuote: true
+bracketSameLine: true
 endOfLine: "lf"
 arrowParens: "avoid"

@@ -1,27 +1,27 @@
-import { useState } from "react"
-import type { FileWithHandle, FileWithDirectoryAndFileHandle } from "browser-fs-access"
+import { useState } from 'react'
+import type { FileWithHandle, FileWithDirectoryAndFileHandle } from 'browser-fs-access'
 
-import "@fontsource/fira-code/latin-300.css" // fallback; make sure this matches `--code-weight-sm` in index.css
-import "@fontsource/fira-code/variable.css"
+import '@fontsource/fira-code/latin-300.css' // fallback; make sure this matches `--code-weight-sm` in index.css
+import '@fontsource/fira-code/variable.css'
 
-import "@fontsource/fira-sans/latin.css"
+import '@fontsource/fira-sans/latin.css'
 
-import "./App.css"
-import "dracula-ui/styles/dracula-ui.css" // TODO: post-process to remove Google Fonts -_-
-import { Box, Text, Anchor } from "dracula-ui"
+import './App.css'
+import 'dracula-ui/styles/dracula-ui.css' // TODO: post-process to remove Google Fonts -_-
+import { Box, Text, Anchor } from 'dracula-ui'
 
 import ResourceSelectionButtons, {
    type Props as ResourceSelectionButtonsProps,
-} from "./components/ResourceSelectionButtons"
-import Editor from "./components/Editor"
+} from './components/ResourceSelectionButtons'
+import Editor from './components/Editor'
 
-import type { ModMap } from "./utils/rimworldModMetaData"
+import type { ModMap } from './utils/rimworldModMetaData'
 
-import { plainText as exampleModsConfigContent } from "@virtual:plain-text/exampleModsConfig.xml"
+import { plainText as exampleModsConfigContent } from '@virtual:plain-text/exampleModsConfig.xml'
 
 const Header = (props: ResourceSelectionButtonsProps) => {
    return (
-      <Box as="header">
+      <Box as='header'>
          <ResourceSelectionButtons {...props} />
       </Box>
    )
@@ -29,10 +29,10 @@ const Header = (props: ResourceSelectionButtonsProps) => {
 
 const Footer = () => {
    return (
-      <Box as="footer" p="xs">
-         <Text size="lg">
-            Made in the 🏔️ with 💗 by{" "}
-            <Anchor href="http://ell.io/tt" color="pinkPurple" hoverColor="cyanGreen">
+      <Box as='footer' p='xs'>
+         <Text size='lg'>
+            Made in the 🏔️ with 💗 by{' '}
+            <Anchor href='http://ell.io/tt' color='pinkPurple' hoverColor='cyanGreen'>
                ELLIOTTCABLE
             </Anchor>
          </Text>
@@ -41,8 +41,8 @@ const Footer = () => {
 }
 
 function App() {
-   const exampleModsConfig = new File([exampleModsConfigContent], "ModsConfig.xml", {
-      type: "text/plain",
+   const exampleModsConfig = new File([exampleModsConfigContent], 'ModsConfig.xml', {
+      type: 'text/plain',
    })
 
    const [modsConfigFile, setModsConfigFile] = useState<FileWithHandle>(exampleModsConfig)

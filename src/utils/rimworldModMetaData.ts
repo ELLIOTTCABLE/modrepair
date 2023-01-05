@@ -3,19 +3,19 @@ import {
    entryIsDirectory,
    filePromise,
    entriesOfDirectories,
-} from "../utils/directoryReader"
+} from '../utils/directoryReader'
 
-import Verse from "./rimworldVerse"
+import Verse from './rimworldVerse'
 
-export const knownVersions = ["1.4", "1.3", "1.2", "1.1", "1.0"] as const
+export const knownVersions = ['1.4', '1.3', '1.2', '1.1', '1.0'] as const
 
 type RimworldVersion = typeof knownVersions[number]
 
 export type ContentSource =
-   | "Undefined"
-   | "OfficialModsFolder"
-   | "ModsFolder"
-   | "SteamWorkshop"
+   | 'Undefined'
+   | 'OfficialModsFolder'
+   | 'ModsFolder'
+   | 'SteamWorkshop'
 
 export type PackageId = string & { __packageId: never }
 
@@ -41,7 +41,7 @@ type CommonModMetaData = {
 }
 
 export type WorkshopModMetaData = {
-   contentSource: "SteamWorkshop"
+   contentSource: 'SteamWorkshop'
    workshopId: string
 } & CommonModMetaData
 
@@ -66,17 +66,17 @@ const helpers = (mod: ModMetaData) => {
 
 const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element) => {
    const dependencies: (ModDependency | void)[] = Array.from(
-      modDependenciesElement.getElementsByTagName("li"),
+      modDependenciesElement.getElementsByTagName('li'),
    ).map((dependencyLi, i) => {
       const packageId =
-         dependencyLi.getElementsByTagName("packageId")[0]?.textContent || undefined
+         dependencyLi.getElementsByTagName('packageId')[0]?.textContent || undefined
       const displayName =
-         dependencyLi.getElementsByTagName("displayName")[0]?.textContent || undefined
+         dependencyLi.getElementsByTagName('displayName')[0]?.textContent || undefined
 
       if (!packageId)
          return console.error(
             `mod metadata error: ${mod.packageId}: dependency '${
-               displayName || "№." + i
+               displayName || '№.' + i
             }' has no <packageId/>`,
             dependencyLi,
          )
@@ -84,16 +84,16 @@ const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element)
       if (!displayName)
          console.warn(
             `mod metadata error: ${mod.packageId}: dependency '${
-               packageId || "№." + i
+               packageId || '№.' + i
             }' has no <displayName/>`,
             dependencyLi,
          )
 
       const steamWorkshopUrl =
-         dependencyLi.getElementsByTagName("steamWorkshopUrl")[0]?.textContent ||
+         dependencyLi.getElementsByTagName('steamWorkshopUrl')[0]?.textContent ||
          undefined
       const downloadUrl =
-         dependencyLi.getElementsByTagName("downloadUrl")[0]?.textContent || undefined
+         dependencyLi.getElementsByTagName('downloadUrl')[0]?.textContent || undefined
 
       return {
          packageId: packageId as PackageId,
@@ -117,24 +117,24 @@ const parseModAboutXml = async (
    const modAboutXmlContentText = await modAboutXmlContent.text()
 
    const parser = new DOMParser()
-   const root = parser.parseFromString(modAboutXmlContentText, "text/xml").documentElement
+   const root = parser.parseFromString(modAboutXmlContentText, 'text/xml').documentElement
 
    const mod = Verse.ModMetaData.Init(contentSource, folderName, root)
 
    const h = helpers(mod)
 
-   const modDependencies = h.expectMaxOne(root, "modDependencies")
+   const modDependencies = h.expectMaxOne(root, 'modDependencies')
    if (modDependencies.length !== 0) {
       const dependencies = parseModDependencies(mod, modDependencies[0])
       mod.unversionedModDependencies = dependencies
    }
 
-   const modDependenciesByVersion = h.expectMaxOne(root, "modDependenciesByVersion")
+   const modDependenciesByVersion = h.expectMaxOne(root, 'modDependenciesByVersion')
    if (modDependenciesByVersion.length !== 0) {
       mod.modDependenciesByVersion = {}
 
       for (const version of knownVersions) {
-         const versionElement = h.expectMaxOne(modDependenciesByVersion[0], "v" + version)
+         const versionElement = h.expectMaxOne(modDependenciesByVersion[0], 'v' + version)
          if (versionElement.length === 0) continue
 
          const dependencies = parseModDependencies(mod, versionElement[0])
@@ -142,21 +142,21 @@ const parseModAboutXml = async (
       }
    }
 
-   const loadAfter = h.expectMaxOne(root, "loadAfter")
+   const loadAfter = h.expectMaxOne(root, 'loadAfter')
    if (loadAfter.length !== 0) {
-      const loadAfters = Array.from(loadAfter[0].getElementsByTagName("li"))
+      const loadAfters = Array.from(loadAfter[0].getElementsByTagName('li'))
       const packageIds = loadAfters.map(
-         (loadAfterLi) => loadAfterLi.textContent as PackageId | null,
+         loadAfterLi => loadAfterLi.textContent as PackageId | null,
       )
 
       mod.loadAfter = packageIds.filter(Boolean) as PackageId[]
    }
 
-   const loadBefore = h.expectMaxOne(root, "loadBefore")
+   const loadBefore = h.expectMaxOne(root, 'loadBefore')
    if (loadBefore.length !== 0) {
-      const loadBefores = Array.from(loadBefore[0].getElementsByTagName("li"))
+      const loadBefores = Array.from(loadBefore[0].getElementsByTagName('li'))
       const packageIds = loadBefores.map(
-         (loadBeforeLi) => loadBeforeLi.textContent as PackageId | null,
+         loadBeforeLi => loadBeforeLi.textContent as PackageId | null,
       )
 
       mod.loadBefore = packageIds.filter(Boolean) as PackageId[]
@@ -173,9 +173,9 @@ const parseMod = async (
    const modEntries = await entriesOfDirectories([modFileSystemEntry])
 
    const altId =
-      "SteamWorkshop" === contentSource ? `Workshop mod ${folderName}` : folderName
+      'SteamWorkshop' === contentSource ? `Workshop mod ${folderName}` : folderName
 
-   const modAboutFolder = modEntries.find((entry) => entry.name === "About")
+   const modAboutFolder = modEntries.find(entry => entry.name === 'About')
    if (!modAboutFolder)
       return console.error(`mod metadata error: ${altId}: no About folder found`)
 
@@ -183,7 +183,7 @@ const parseMod = async (
       return console.error(`mod metadata error: ${altId}: About/ is not a directory`)
 
    const modAboutEntries = await entriesOfDirectories([modAboutFolder])
-   const modAboutXml = modAboutEntries.find((entry) => entry.name === "About.xml")
+   const modAboutXml = modAboutEntries.find(entry => entry.name === 'About.xml')
    if (!modAboutXml)
       return console.error(`mod metadata error: ${altId}: no About/About.xml found`)
 
