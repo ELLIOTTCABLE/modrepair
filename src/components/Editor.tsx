@@ -18,7 +18,7 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
 
    useAsyncEffect(
       async isStillMounted => {
-         let modsConfigText = await modsConfigFile.text()
+         const modsConfigText = await modsConfigFile.text()
          if (!isStillMounted()) return
 
          updateEditorContent(modsConfigText)
@@ -33,7 +33,7 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
 
    const handleModelContentDidChange = useCallback(
       (ev: MonacoT.editor.IModelContentChangedEvent) => {
-         let newContent = editorRef.current?.getModel()?.getValue()
+         const newContent = editorRef.current?.getModel()?.getValue()
          console.log('handleModelContentDidChange', newContent, ev)
          if (newContent !== content) setContent(newContent || '')
       },
