@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { StrictMode, useState } from 'react'
 import type { FileWithHandle } from 'browser-fs-access'
 
 import '@fontsource/fira-code/latin-300.css' // fallback; make sure this matches `--code-weight-sm` in index.css
@@ -51,7 +51,7 @@ function App() {
    const [modMap, setModMap] = useState<ModMap | undefined>()
 
    return (
-      <>
+      <StrictMode>
          <Header
             fileIsSelected={fileIsSelected}
             setFileIsSelected={setFileIsSelected}
@@ -64,7 +64,7 @@ function App() {
          />
          <Editor modsConfigFile={modsConfigFile} />
          <Footer />
-      </>
+      </StrictMode>
    )
 }
 
