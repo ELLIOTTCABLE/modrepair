@@ -16,6 +16,16 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
    const [content, setContent] = useState('<!-- Uninitialized content -->')
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
+   useAsyncEffect(
+      async isStillMounted => {
+         let modsConfigText = await modsConfigFile.text()
+         if (!isStillMounted()) return
+
+         updateEditorContent(modsConfigText)
+      },
+      [modsConfigFile],
+   )
+
    const updateEditorContent = (content: string) => {
       setContent(content)
       editorRef.current?.getModel()?.setValue(content)
@@ -28,16 +38,6 @@ export default function Editor({ modsConfigFile, fileIsSelected = false }: Props
          if (newContent !== content) setContent(newContent || '')
       },
       [editorRef, setContent],
-   )
-
-   useAsyncEffect(
-      async isStillMounted => {
-         let modsConfigText = await modsConfigFile.text()
-         if (!isStillMounted()) return
-
-         updateEditorContent(modsConfigText)
-      },
-      [modsConfigFile],
    )
 
    const handleEditorWillMount: MonacoReactT.BeforeMount = monaco => {
