@@ -29,7 +29,8 @@ export default function Editor({
    setModMap,
    fileIsSelected = false,
 }: Props) {
-   const [content, setContent] = useState('<!-- Uninitialized content -->')
+   const initialText = '<!-- Loading content ... -->'
+   const [xmlText, setXmlText] = useState(initialText)
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
    useAsyncEffect(
@@ -43,7 +44,7 @@ export default function Editor({
    )
 
    const updateEditorContent = (content: string) => {
-      setContent(content)
+      setXmlText(content)
       editorRef.current?.getModel()?.setValue(content)
    }
 
@@ -53,9 +54,9 @@ export default function Editor({
          console.groupCollapsed('handleModelContentDidChange')
          console.log('handleModelContentDidChange:', newContent, ev)
          console.groupEnd('handleModelContentDidChange')
-         setContent(newContent || '')
+         setXmlText(newContent || '')
       },
-      [editorRef, setContent],
+      [editorRef, setXmlText],
    )
 
    const handleEditorWillMount: MonacoReactT.BeforeMount = monaco => {
@@ -92,7 +93,6 @@ export default function Editor({
          height='100%'
          theme='dracula'
          defaultLanguage='xml'
-         // defaultValue={modsConfigFile}
          beforeMount={handleEditorWillMount}
          onMount={handleEditorDidMount}
          // onChange={handleEditorDidChange}
