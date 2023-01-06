@@ -30,6 +30,7 @@ Criterion
 3. Stretch goals:
     - [ ] Persistence of the undo-redo stack, so that the user can close the browser and come back to it later
     - [ ] Prompt the user to backup their `ModsConfig.xml` file before they start
+    - [ ] Inform the user that their file will be overwritten while working
     - [ ] Detect external changes to the `ModsConfig.xml` file, and help the user avoid losing their work
     - [ ] Handle / retain any non-managed XML comments
     - [ ] Handle weird XML formatting (e.g. tabs, newlines, etc)

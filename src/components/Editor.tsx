@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import { useAsyncEffect } from 'use-async-effect'
 
@@ -9,6 +9,7 @@ import type * as MonacoT from 'monaco-editor'
 import draculaThemeData from '../Dracula.monacotheme.json'
 
 import type { ModMap } from '../utils/rimworld/modMetaData'
+import { parseModsConfig } from '../utils/rimworld/modsConfig'
 
 declare global {
    interface Console {
@@ -46,6 +47,14 @@ export default function Editor({
 }: Props) {
    const initialText = '<!-- Loading content ... -->'
    const [xmlText, setXmlText] = useState(initialText)
+   const xmlDOM = useMemo(
+      function updateXmlDOM() {
+         consoleLogLongString('updateXmlDOM:', xmlText)
+         return parseModsConfig(xmlText)
+      },
+      [xmlText],
+   )
+
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
    useAsyncEffect(
@@ -53,12 +62,13 @@ export default function Editor({
          const modsConfigText = await modsConfigFile.text()
          consoleLogLongString('modsConfigFileChanged:', modsConfigText)
 
-         if (!isStillMounted()) return
+         if (!editorRef || !isStillMounted()) return
          updateEditorContent(modsConfigText)
       },
       [modsConfigFile],
    )
 
+   // FIXME: WHY DOES THIS GET CALLED TWICE ON FIRST LOAD
    const updateEditorContent = (content: string) => {
       consoleLogLongString('updateEditorContent:', content)
       setXmlText(content)
