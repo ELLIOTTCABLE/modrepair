@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import type { FileWithHandle } from 'browser-fs-access'
 
 import '@fontsource/fira-code/latin-300.css' // fallback; make sure this matches `--code-weight-sm` in index.css
@@ -18,6 +19,11 @@ import Editor from './components/Editor'
 import type { ModMap } from './utils/rimworld/modMetaData'
 
 import { plainText as exampleModsConfigContent } from '@virtual:plain-text/exampleModsConfig.xml'
+
+export type ModsConfigFile = {
+   file: FileWithHandle
+   isUserSelected: boolean
+}
 
 const Header = (props: ResourceSelectionButtonsProps) => {
    return (
@@ -45,8 +51,10 @@ function App() {
       type: 'text/plain',
    })
 
-   const [modsConfigFile, setModsConfigFile] = useState<FileWithHandle>(exampleModsConfig)
-   const [fileIsSelected, setFileIsSelected] = useState(false)
+   const [modsConfigFile, setModsConfigFile] = useState<ModsConfigFile>({
+      file: exampleModsConfig,
+      isUserSelected: false,
+   })
    const [workshopDir, setWorkshopDir] = useState<FileSystemEntry | undefined>()
    const [modMap, setModMap] = useState<ModMap | undefined>()
 
@@ -55,8 +63,6 @@ function App() {
    return (
       <>
          <Header
-            fileIsSelected={fileIsSelected}
-            setFileIsSelected={setFileIsSelected}
             modsConfigFile={modsConfigFile}
             setModsConfigFile={setModsConfigFile}
             workshopDir={workshopDir}

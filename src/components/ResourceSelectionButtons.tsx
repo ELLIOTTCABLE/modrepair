@@ -4,9 +4,9 @@ import type { Dispatch, SetStateAction, DragEventHandler, MouseEventHandler } fr
 import { Button } from 'dracula-ui'
 
 import { fileOpen } from 'browser-fs-access'
-import type { FileWithHandle } from 'browser-fs-access'
 
 import { entryIsDirectory, entriesOfDirectories } from '../utils/directoryReader'
+import type { ModsConfigFile } from '../App'
 
 import { parseMod } from '../utils/rimworld/modMetaData'
 import type { ModMap } from '../utils/rimworld/modMetaData'
@@ -18,10 +18,8 @@ declare global {
 }
 
 export interface Props {
-   fileIsSelected: boolean
-   setFileIsSelected: Dispatch<SetStateAction<boolean>>
-   modsConfigFile: FileWithHandle
-   setModsConfigFile: Dispatch<SetStateAction<FileWithHandle>>
+   modsConfigFile: ModsConfigFile
+   setModsConfigFile: Dispatch<SetStateAction<ModsConfigFile>>
    workshopDir?: FileSystemEntry
    setWorkshopDir: Dispatch<SetStateAction<FileSystemEntry | undefined>>
    modMap?: ModMap
@@ -52,7 +50,7 @@ const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
 }
 
 const WorkshopDirectoryDropZone = ({
-   fileIsSelected,
+   modsConfigFile: { isUserSelected },
    workshopDir,
    setWorkshopDir,
    modMap,
@@ -85,7 +83,7 @@ const WorkshopDirectoryDropZone = ({
       [setWorkshopDir, setModMap],
    )
 
-   const isNextStep = !workshopDir && fileIsSelected
+   const isNextStep = !workshopDir && isUserSelected
    const isProcessing = workshopDir && !modMap
    function whileNotProcessing<T>(v: T): T | undefined {
       return isProcessing ? undefined : v
@@ -106,9 +104,8 @@ const WorkshopDirectoryDropZone = ({
 }
 
 const SelectFileButton = ({
+   modsConfigFile: { isUserSelected },
    setModsConfigFile,
-   fileIsSelected,
-   setFileIsSelected,
 }: Props) => {
    const handleModsConfigFileSelect: MouseEventHandler = useCallback(
       async e => {
@@ -122,16 +119,15 @@ const SelectFileButton = ({
             id: 'rimworld-modsconfig-xml',
          })
 
-         setModsConfigFile(modsConfigFile)
-         setFileIsSelected(true)
+         setModsConfigFile({ file: modsConfigFile, isUserSelected: true })
       },
-      [setModsConfigFile, setFileIsSelected],
+      [setModsConfigFile],
    )
 
    return (
       <Button
-         variant={fileIsSelected ? 'outline' : undefined}
-         color={fileIsSelected ? 'pink' : 'animated'}
+         variant={isUserSelected ? 'outline' : undefined}
+         color={isUserSelected ? 'pink' : 'animated'}
          onClick={handleModsConfigFileSelect}>
          1. Select ModsConfig.xml
       </Button>

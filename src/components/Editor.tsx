@@ -10,6 +10,7 @@ import draculaThemeData from '../Dracula.monacotheme.json'
 
 import type { ModMap } from '../utils/rimworld/modMetaData'
 import { parseModsConfig } from '../utils/rimworld/modsConfig'
+import type { ModsConfigFile } from '../App'
 
 declare global {
    interface Console {
@@ -18,10 +19,9 @@ declare global {
 }
 
 export interface Props {
-   modsConfigFile: File
+   modsConfigFile: ModsConfigFile
    modMap?: ModMap
    setModMap: Dispatch<SetStateAction<ModMap | undefined>>
-   fileIsSelected?: boolean
 }
 
 const consoleLogLongString: Console['log'] = (
@@ -39,12 +39,7 @@ const consoleLogLongString: Console['log'] = (
    }
 }
 
-export default function Editor({
-   modsConfigFile,
-   modMap,
-   setModMap,
-   fileIsSelected = false,
-}: Props) {
+export default function Editor({ modsConfigFile, modMap, setModMap }: Props) {
    const initialText = '<!-- Loading content ... -->'
    const [xmlText, setXmlText] = useState(initialText)
    const xmlDOM = useMemo(
@@ -59,7 +54,7 @@ export default function Editor({
 
    useAsyncEffect(
       async function modsConfigFileChanged(isStillMounted) {
-         const modsConfigText = await modsConfigFile.text()
+         const modsConfigText = await modsConfigFile.file.text()
          consoleLogLongString('modsConfigFileChanged:', modsConfigText)
 
          if (!editorRef || !isStillMounted()) return
@@ -93,7 +88,7 @@ export default function Editor({
       console.log('handleEditorDidMount', editor, _monaco)
       editorRef.current = editor
 
-      updateEditorContent(await modsConfigFile.text())
+      updateEditorContent(await modsConfigFile.file.text())
 
       editor.onDidChangeModelContent(handleModelContentDidChange)
    }
