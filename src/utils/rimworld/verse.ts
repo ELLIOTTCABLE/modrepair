@@ -1,4 +1,4 @@
-import type { ContentSource, ModMetaData } from './rimworldModMetaData'
+import type { ContentSource, ModMetaData } from './modMetaData'
 
 // A one-to-one reimplementation of Rimworld's `Verse.GenText.StableStringHash`
 // method. (This will likely fail on non-ASCII text, due to JavaScript and C#/CIL
