@@ -182,7 +182,7 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
       console.error(`mod metadata error: ${name}: no <ModMetaData/> found`, root)
    }
 
-   let mod = TryParsePackageId({
+   const mod = TryParsePackageId({
       name,
       packageId: root.getElementsByTagName('packageId')[0]?.textContent || undefined,
       author: root.getElementsByTagName('author')[0]?.textContent || undefined,
