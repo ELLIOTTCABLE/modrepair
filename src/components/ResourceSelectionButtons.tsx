@@ -113,6 +113,7 @@ const SelectFileButton = ({
    const handleModsConfigFileSelect: MouseEventHandler = useCallback(
       async e => {
          e.preventDefault()
+         console.log('handleModsConfigFileSelect:', e)
 
          const modsConfigFile = await fileOpen({
             startIn: 'documents',

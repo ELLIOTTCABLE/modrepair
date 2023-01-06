@@ -50,6 +50,8 @@ function App() {
    const [workshopDir, setWorkshopDir] = useState<FileSystemEntry | undefined>()
    const [modMap, setModMap] = useState<ModMap | undefined>()
 
+   console.log('rendering App')
+
    return (
       <>
          <Header

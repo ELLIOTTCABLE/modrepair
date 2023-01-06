@@ -23,6 +23,21 @@ export interface Props {
    fileIsSelected?: boolean
 }
 
+const consoleLogLongString: Console['log'] = (
+   descriptor: string,
+   content: string,
+   ...args
+) => {
+   const firstLine = (content.match(/^.*$/m) || [])[0]
+   if (firstLine && firstLine !== content) {
+      console.groupCollapsed(descriptor + ' ' + firstLine)
+      console.log(descriptor, content, ...args)
+      console.groupEnd(descriptor + ' ' + firstLine)
+   } else {
+      console.log(descriptor, content, ...args)
+   }
+}
+
 export default function Editor({
    modsConfigFile,
    modMap,
@@ -36,14 +51,16 @@ export default function Editor({
    useAsyncEffect(
       async function modsConfigFileChanged(isStillMounted) {
          const modsConfigText = await modsConfigFile.text()
-         if (!isStillMounted()) return
+         consoleLogLongString('modsConfigFileChanged:', modsConfigText)
 
+         if (!isStillMounted()) return
          updateEditorContent(modsConfigText)
       },
       [modsConfigFile],
    )
 
    const updateEditorContent = (content: string) => {
+      consoleLogLongString('updateEditorContent:', content)
       setXmlText(content)
       editorRef.current?.getModel()?.setValue(content)
    }
@@ -51,9 +68,7 @@ export default function Editor({
    const handleModelContentDidChange = useCallback(
       (ev: MonacoT.editor.IModelContentChangedEvent) => {
          const newContent = editorRef.current?.getModel()?.getValue()
-         console.groupCollapsed('handleModelContentDidChange')
-         console.log('handleModelContentDidChange:', newContent, ev)
-         console.groupEnd('handleModelContentDidChange')
+         consoleLogLongString('handleModelContentDidChange:', newContent, ev)
          setXmlText(newContent || '')
       },
       [editorRef, setXmlText],
@@ -76,6 +91,8 @@ export default function Editor({
    const root = document.documentElement,
       cvFiraCode = getComputedStyle(root).getPropertyValue('--fira-code'),
       cvCodeWeightSm = getComputedStyle(root).getPropertyValue('--code-weight-sm')
+
+   console.log('rendering Editor')
 
    return (
       <MonacoEditor
