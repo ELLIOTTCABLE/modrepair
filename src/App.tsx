@@ -62,7 +62,7 @@ function App() {
             modMap={modMap}
             setModMap={setModMap}
          />
-         <Editor modsConfigFile={modsConfigFile} />
+         <Editor modsConfigFile={modsConfigFile} modMap={modMap} setModMap={setModMap} />
          <Footer />
       </>
    )

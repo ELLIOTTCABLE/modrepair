@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import { useAsyncEffect } from 'use-async-effect'
 
 import MonacoEditor from '@monaco-editor/react'
@@ -6,6 +7,8 @@ import type * as MonacoReactT from '@monaco-editor/react'
 import type * as MonacoT from 'monaco-editor'
 
 import draculaThemeData from '../Dracula.monacotheme.json'
+
+import type { ModMap } from '../utils/rimworld/modMetaData'
 
 declare global {
    interface Console {
@@ -15,10 +18,17 @@ declare global {
 
 export interface Props {
    modsConfigFile: File
+   modMap?: ModMap
+   setModMap: Dispatch<SetStateAction<ModMap | undefined>>
    fileIsSelected?: boolean
 }
 
-export default function Editor({ modsConfigFile, fileIsSelected = false }: Props) {
+export default function Editor({
+   modsConfigFile,
+   modMap,
+   setModMap,
+   fileIsSelected = false,
+}: Props) {
    const [content, setContent] = useState('<!-- Uninitialized content -->')
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
 
