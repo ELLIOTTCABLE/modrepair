@@ -86,7 +86,7 @@ const TryParsePackageId = (m: {
    name: string
    author?: string
    description?: string
-}) => {
+}): ModMetaData => {
    /*
    // Verse.ModMetaData.ModMetaDataInternal
    public bool TryParsePackageId(bool isOfficial, bool logIssues = true) {
@@ -133,6 +133,8 @@ const TryParsePackageId = (m: {
          m,
       )
    }
+
+   // FIXME: Type this properly
    return m as ModMetaData
 }
 

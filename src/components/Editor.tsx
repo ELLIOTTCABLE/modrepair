@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import { useAsyncEffect } from 'use-async-effect'
 
@@ -40,43 +40,47 @@ const consoleLogLongString: Console['log'] = (
 }
 
 export default function Editor({ modsConfigFile, modMap, setModMap }: Props) {
-   const initialText = '<!-- Loading content ... -->'
-   const [xmlText, setXmlText] = useState(initialText)
-   const xmlDOM = useMemo(
-      function updateXmlDOM() {
-         consoleLogLongString('updateXmlDOM:', xmlText)
-         return parseModsConfig(xmlText)
-      },
-      [xmlText],
-   )
+   const initialText = '<ModsConfigData><!-- Loading content ... --></ModsConfigData>'
+   const [modsConfig, setModsConfig] = useState(() => parseModsConfig(initialText))
 
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
-
-   useAsyncEffect(
-      async function modsConfigFileChanged(isStillMounted) {
-         const modsConfigText = await modsConfigFile.file.text()
-         consoleLogLongString('modsConfigFileChanged:', modsConfigText)
-
-         if (!editorRef || !isStillMounted()) return
-         updateEditorContent(modsConfigText)
-      },
-      [modsConfigFile],
-   )
 
    // FIXME: WHY DOES THIS GET CALLED TWICE ON FIRST LOAD
    const updateEditorContent = (content: string) => {
       consoleLogLongString('updateEditorContent:', content)
-      setXmlText(content)
+      setModsConfig(parseModsConfig(content))
       editorRef.current?.getModel()?.setValue(content)
    }
+
+   const replaceEditorFile = useCallback(
+      async (isStillMounted: () => boolean) => {
+         // TODO: create a new Monaco model
+         const modsConfigText = await modsConfigFile.file.text()
+         consoleLogLongString('replaceEditorFile:', modsConfigText)
+
+         if (editorRef && isStillMounted()) updateEditorContent(modsConfigText)
+      },
+      [editorRef, modsConfigFile],
+   )
+
+   useAsyncEffect(
+      function modsConfigFileChanged(isStillMounted) {
+         return replaceEditorFile(isStillMounted)
+      },
+      [modsConfigFile],
+   )
 
    const handleModelContentDidChange = useCallback(
       (ev: MonacoT.editor.IModelContentChangedEvent) => {
          const newContent = editorRef.current?.getModel()?.getValue()
          consoleLogLongString('handleModelContentDidChange:', newContent, ev)
-         setXmlText(newContent || '')
+
+         if (newContent) {
+            const newModsConfig = parseModsConfig(newContent)
+            if (newModsConfig) setModsConfig(newModsConfig)
+         }
       },
-      [editorRef, setXmlText],
+      [editorRef, setModsConfig],
    )
 
    const handleEditorWillMount: MonacoReactT.BeforeMount = monaco => {
@@ -88,7 +92,7 @@ export default function Editor({ modsConfigFile, modMap, setModMap }: Props) {
       console.log('handleEditorDidMount', editor, _monaco)
       editorRef.current = editor
 
-      updateEditorContent(await modsConfigFile.file.text())
+      replaceEditorFile(() => true)
 
       editor.onDidChangeModelContent(handleModelContentDidChange)
    }

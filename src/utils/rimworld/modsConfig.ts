@@ -1,7 +1,17 @@
 const domParser = new DOMParser()
 
-const parseModsConfig = (str: string): XMLDocument => {
-   return domParser.parseFromString(str, 'text/xml')
+type ModsConfig = {
+   text: string
+   dom: XMLDocument
+}
+
+const parseModsConfig = (text: string): ModsConfig => {
+   const dom = domParser.parseFromString(text, 'application/xml')
+
+   return {
+      text,
+      dom,
+   }
 }
 
 export { parseModsConfig }
