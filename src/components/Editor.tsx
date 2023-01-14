@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 import { useAsyncEffect } from 'use-async-effect'
+import useFontFaceObserver from 'use-font-face-observer'
 
 import MonacoEditor from '@monaco-editor/react'
 import type * as MonacoReactT from '@monaco-editor/react'
@@ -41,10 +42,13 @@ const consoleLogLongString = (
 }
 
 export default function Editor({ modsConfigFile, modMap, setModMap }: Props) {
+   const isFontLoaded = useFontFaceObserver([{ family: 'Fira Code' }])
+
    const initialText = '<ModsConfigData><!-- Loading content ... --></ModsConfigData>'
    const [modsConfig, setModsConfig] = useState(() => parseModsConfig(initialText))
 
    const editorRef = useRef<MonacoT.editor.IStandaloneCodeEditor | null>(null)
+   const monacoRef = useRef<typeof MonacoT | null>(null)
 
    const updateEditorContent = useCallback(
       (arg: ((prev: ModsConfig) => ModsConfig) | ModsConfig): void => {
@@ -118,9 +122,16 @@ export default function Editor({ modsConfigFile, modMap, setModMap }: Props) {
       monaco.editor.defineTheme('dracula', themeData)
    }
 
-   const handleEditorDidMount: MonacoReactT.OnMount = async (editor, _monaco) => {
-      console.log('handleEditorDidMount', editor, _monaco)
+   useEffect(() => {
+      if (isFontLoaded) monacoRef.current?.editor.remeasureFonts()
+   }, [isFontLoaded])
+
+   const handleEditorDidMount: MonacoReactT.OnMount = async (editor, monaco) => {
+      console.log('handleEditorDidMount', editor, monaco)
       editorRef.current = editor
+      monacoRef.current = monaco
+
+      if (isFontLoaded) monaco.editor.remeasureFonts()
 
       replaceEditorFile(() => true)
 
