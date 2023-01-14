@@ -4,6 +4,7 @@ import {
    filePromise,
    entriesOfDirectories,
 } from '../directoryReader'
+import { childNodesByTagName } from '../xml'
 
 import Verse from './verse'
 
@@ -52,7 +53,7 @@ const helpers = (mod: ModMetaData) => {
    const descriptor = `mod metadata error: ${mod.packageId}`
    return {
       expectMaxOne: (node: Element, tagName: string) => {
-         const resultElements = node.getElementsByTagName(tagName)
+         const resultElements = childNodesByTagName(node, tagName)
          if (resultElements.length > 1)
             console.error(
                `${descriptor}: more than one <${tagName}/> found in <${node.tagName}/>`,
@@ -65,13 +66,14 @@ const helpers = (mod: ModMetaData) => {
 }
 
 const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element) => {
-   const dependencies: (ModDependency | void)[] = Array.from(
-      modDependenciesElement.getElementsByTagName('li'),
+   const dependencies: (ModDependency | void)[] = childNodesByTagName(
+      modDependenciesElement,
+      'li',
    ).map((dependencyLi, i) => {
       const packageId =
-         dependencyLi.getElementsByTagName('packageId')[0]?.textContent || undefined
+         childNodesByTagName(dependencyLi, 'packageId')[0]?.textContent || undefined
       const displayName =
-         dependencyLi.getElementsByTagName('displayName')[0]?.textContent || undefined
+         childNodesByTagName(dependencyLi, 'displayName')[0]?.textContent || undefined
 
       if (!packageId)
          return console.error(
@@ -90,10 +92,10 @@ const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element)
          )
 
       const steamWorkshopUrl =
-         dependencyLi.getElementsByTagName('steamWorkshopUrl')[0]?.textContent ||
+         childNodesByTagName(dependencyLi, 'steamWorkshopUrl')[0]?.textContent ||
          undefined
       const downloadUrl =
-         dependencyLi.getElementsByTagName('downloadUrl')[0]?.textContent || undefined
+         childNodesByTagName(dependencyLi, 'downloadUrl')[0]?.textContent || undefined
 
       return {
          packageId: packageId as PackageId,
@@ -101,7 +103,7 @@ const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element)
          steamWorkshopUrl,
          downloadUrl,
       }
-   }) // dependencies = modDependencies.getElementsByTagName("li").map
+   }) // dependencies = childNodesByTagName(modDependencies, "li").map
 
    const result = dependencies.filter(Boolean)
 
@@ -144,7 +146,7 @@ const parseModAboutXml = async (
 
    const loadAfter = h.expectMaxOne(root, 'loadAfter')
    if (loadAfter.length !== 0) {
-      const loadAfters = Array.from(loadAfter[0].getElementsByTagName('li'))
+      const loadAfters = childNodesByTagName(loadAfter[0], 'li')
       const packageIds = loadAfters.map(
          loadAfterLi => loadAfterLi.textContent as PackageId | null,
       )
@@ -154,7 +156,7 @@ const parseModAboutXml = async (
 
    const loadBefore = h.expectMaxOne(root, 'loadBefore')
    if (loadBefore.length !== 0) {
-      const loadBefores = Array.from(loadBefore[0].getElementsByTagName('li'))
+      const loadBefores = childNodesByTagName(loadBefore[0], 'li')
       const packageIds = loadBefores.map(
          loadBeforeLi => loadBeforeLi.textContent as PackageId | null,
       )

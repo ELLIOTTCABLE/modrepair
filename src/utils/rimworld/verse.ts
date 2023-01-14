@@ -1,3 +1,4 @@
+import { childNodesByTagName } from '../xml'
 import type { ContentSource, ModMetaData } from './modMetaData'
 
 // A one-to-one reimplementation of Rimworld's `Verse.GenText.StableStringHash`
@@ -169,7 +170,7 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
    }
    */
 
-   let name = root.getElementsByTagName('name')[0]?.textContent
+   let name = childNodesByTagName(root, 'name')[0]?.textContent
 
    if (null == name || name.length === 0) {
       if ('SteamWorkshop' === contentSource) {
@@ -186,9 +187,9 @@ const Init = (contentSource: ContentSource, folderName: string, root: Element) =
 
    const mod = TryParsePackageId({
       name,
-      packageId: root.getElementsByTagName('packageId')[0]?.textContent || undefined,
-      author: root.getElementsByTagName('author')[0]?.textContent || undefined,
-      description: root.getElementsByTagName('description')[0]?.textContent || undefined,
+      packageId: childNodesByTagName(root, 'packageId')[0]?.textContent || undefined,
+      author: childNodesByTagName(root, 'author')[0]?.textContent || undefined,
+      description: childNodesByTagName(root, 'description')[0]?.textContent || undefined,
    })
 
    if ('SteamWorkshop' === contentSource) mod.workshopId = folderName
