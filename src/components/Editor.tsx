@@ -24,12 +24,12 @@ export interface Props {
    setModMap: Dispatch<SetStateAction<ModMap | undefined>>
 }
 
-const consoleLogLongString: Console['log'] = (
-   descriptor: string,
-   content: string,
-   ...args
+const consoleLogLongString = (
+   descriptor?: string,
+   content?: string,
+   ...args: Parameters<Console['log']>
 ) => {
-   const firstLine = (content.match(/^.*$/m) || [])[0]
+   const firstLine = (content?.match(/^.*$/m) || [])[0]
    if (firstLine && firstLine !== content) {
       console.groupCollapsed(descriptor + ' ' + firstLine)
       console.log(descriptor, content, ...args)
