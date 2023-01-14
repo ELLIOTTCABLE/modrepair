@@ -43,7 +43,7 @@ const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
 
       const modMetaData = await parseMod('SteamWorkshop', entry)
       if (modMetaData && modMetaData.packageId)
-         modMap.set(modMetaData.packageId, modMetaData)
+         modMap.set(modMetaData.packageId.toLowerCase(), modMetaData)
    }
    console.timeEnd('modMapOfFileSystemEntries')
    return modMap
