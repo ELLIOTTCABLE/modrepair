@@ -82,8 +82,6 @@ const updateModsConfigWithModMap = (modsConfig: ModsConfig, modMap: ModMap) => {
 
       const modMetaData = modMap.get(packageId)
       if (!modMetaData) return
-      const modDeps = getModDependenciesByVersion(modMetaData, '1.4')
-      if (!modDeps || modDeps.length === 0) return
 
       const newTextContent = modMetaDataToString(modMetaData)
 
