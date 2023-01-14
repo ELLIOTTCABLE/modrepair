@@ -18,5 +18,10 @@ module.exports = {
       sourceType: 'module',
    },
    plugins: ['react', 'react-hooks', 'jsx-a11y', '@typescript-eslint'],
-   rules: {},
+   rules: {
+      '@typescript-eslint/no-unused-vars': [
+         'warn',
+         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+   },
 }

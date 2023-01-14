@@ -8,7 +8,7 @@ import { fileOpen } from 'browser-fs-access'
 import { entryIsDirectory, entriesOfDirectories } from '../utils/directoryReader'
 import type { ModsConfigFile } from '../App'
 
-import { parseMod } from '../utils/rimworld/modMetaData'
+import { PackageId, parseMod } from '../utils/rimworld/modMetaData'
 import type { ModMap } from '../utils/rimworld/modMetaData'
 
 declare global {
@@ -43,7 +43,7 @@ const modMapOfFileSystemEntries = async (entries: FileSystemEntry[]) => {
 
       const modMetaData = await parseMod('SteamWorkshop', entry)
       if (modMetaData && modMetaData.packageId)
-         modMap.set(modMetaData.packageId.toLowerCase(), modMetaData)
+         modMap.set(modMetaData.packageId.toLowerCase() as PackageId, modMetaData)
    }
    console.timeEnd('modMapOfFileSystemEntries')
    return modMap

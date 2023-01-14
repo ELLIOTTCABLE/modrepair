@@ -20,33 +20,42 @@ export type ContentSource =
 
 export type PackageId = string & { __packageId: never }
 
-export type ModMap = Map<PackageId, ModMetaData>
+export type ModMap = Map<PackageId, CommonModMetaData>
 
 type ModDependency = {
    packageId: PackageId
-   displayName: string
+   displayName?: string
    steamWorkshopUrl?: string
    downloadUrl?: string
 }
 
-type CommonModMetaData = {
-   contentSource: ContentSource
-   packageId: PackageId
-   name: string
-   author?: string
-   description?: string
+type StringyModMetaData = {
+   name?: string
    unversionedModDependencies?: ModDependency[]
    modDependenciesByVersion?: Partial<Record<RimworldVersion, ModDependency[]>>
+}
+
+type CommonModMetaData = StringyModMetaData & {
+   contentSource: ContentSource
+   packageId: PackageId
+   author?: string
+   description?: string
    loadAfter?: PackageId[]
    loadBefore?: PackageId[]
 }
 
 export type WorkshopModMetaData = {
    contentSource: 'SteamWorkshop'
+   name: string
    workshopId: string
 } & CommonModMetaData
 
 export type ModMetaData = WorkshopModMetaData
+
+export const getModDependenciesByVersion = (
+   mod: StringyModMetaData,
+   version: RimworldVersion,
+) => mod.modDependenciesByVersion?.[version] || mod.unversionedModDependencies
 
 // constructs some error-helpers
 const helpers = (mod: ModMetaData) => {
@@ -63,6 +72,34 @@ const helpers = (mod: ModMetaData) => {
          return resultElements
       },
    }
+}
+
+// TODO: Handle empty string, etc
+export const modMetaDataOfString = (commentText: string): StringyModMetaData => {
+   const idx = commentText.lastIndexOf(':')
+   const name = commentText.substring(0, idx).trim()
+   const depIds = commentText
+      .substring(idx + 1)
+      .split(',')
+      .map(s => s.trim() as PackageId)
+
+   return {
+      name,
+      unversionedModDependencies: depIds.map(
+         (packageId): ModDependency => ({ packageId }),
+      ),
+   } as const
+}
+
+export const modMetaDataToString = (modMetaData: StringyModMetaData) => {
+   const name = modMetaData.name
+   const deps = getModDependenciesByVersion(modMetaData, '1.4')
+
+   if (!deps || deps.length === 0) return name
+   const depIds = deps?.map(({ packageId }) => packageId).join(', ')
+
+   if (!name) return depIds
+   return `${name}: ${depIds}`
 }
 
 const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element) => {
@@ -99,7 +136,7 @@ const parseModDependencies = (mod: ModMetaData, modDependenciesElement: Element)
 
       return {
          packageId: packageId as PackageId,
-         displayName: displayName || packageId,
+         displayName,
          steamWorkshopUrl,
          downloadUrl,
       }

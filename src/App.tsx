@@ -56,7 +56,7 @@ function App() {
       isUserSelected: false,
    })
    const [workshopDir, setWorkshopDir] = useState<FileSystemEntry | undefined>()
-   const [modMap, setModMap] = useState<ModMap | undefined>()
+   const [modMap, setModMap] = useState<ModMap>(new Map())
 
    console.log('rendering App')
 
